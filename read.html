@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Reading…</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.fsbtn {
+  background: transparent;
+  border: 1px solid var(--gold-border);
+  color: var(--gold-dim);
+  font-size: .78rem;
+  padding: .25rem .65rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: var(--sans);
+  transition: all .15s;
+}
+.fsbtn:hover, .fsbtn.on {
+  background: var(--gold);
+  color: var(--dark);
+  border-color: var(--gold);
+}
+#font-controls {
+  display: none;
+  position: absolute;
+  top: 52px; right: 1.5rem;
+  background: var(--dark);
+  border: 1px solid var(--gold-border);
+  border-radius: 4px;
+  padding: .85rem 1.1rem;
+  z-index: 50;
+}
+#font-controls.open { display: block; }
+#font-controls p {
+  font-family: var(--sans);
+  font-size: .68rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: .5rem;
+  max-width: none;
+}
+.fsbtn-row { display: flex; gap: .4rem; }
+.chapter-end-ornament {
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--gold-dim);
+  letter-spacing: .4em;
+  margin: 3rem 0 1.5rem;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ STICKY READER BAR ══ -->
+<div style="position:sticky;top:0;z-index:40;">
+  <div id="reader-bar" style="background:var(--dark);
+       border-bottom:1px solid var(--gold-border);
+       padding:0 2rem;display:flex;align-items:center;
+       justify-content:space-between;height:52px;">
+    <button class="reader-back" onclick="history.back()">← Chapters</button>
+    <span id="reader-ch-label"
+          style="font-family:var(--sans);font-size:.72rem;
+                 color:var(--gold-dim);letter-spacing:.08em;
+                 text-align:center;flex:1;padding:0 1rem;"></span>
+    <button id="aa-btn"
+            style="background:none;border:none;cursor:pointer;
+                   color:var(--gold-dim);font-family:var(--sans);
+                   font-size:.82rem;letter-spacing:.06em;
+                   transition:color .2s;padding:0;"
+            onclick="toggleFC()"
+            onmouseenter="this.style.color='var(--gold)'"
+            onmouseleave="this.style.color='var(--gold-dim)'">
+      Aa
+    </button>
+  </div>
+
+  <!-- font size picker dropdown -->
+  <div id="font-controls">
+    <p>Text Size</p>
+    <div class="fsbtn-row">
+      <button class="fsbtn"    onclick="setSize('small')">S</button>
+      <button class="fsbtn on" onclick="setSize('normal')">M</button>
+      <button class="fsbtn"    onclick="setSize('large')">L</button>
+      <button class="fsbtn"    onclick="setSize('xlarge')">XL</button>
+    </div>
+  </div>
+
+  <!-- gold reading progress bar -->
+  <div class="reader-progress">
+    <div class="reader-progress-bar" id="progress-bar"></div>
+  </div>
+</div>
+
+<!-- ══ CHAPTER BODY ══ -->
+<main>
+  <div class="reader-wrap" id="reader-wrap">
+
+    <div class="loading-state" id="reader-loading">
+      <span class="spinner"></span>
+      Loading chapter…
+    </div>
+
+    <div id="reader-content" style="display:none;">
+      <p  class="reader-ch-num"   id="reader-ch-num"></p>
+      <h1 class="reader-ch-title" id="reader-ch-title"></h1>
+      <p  class="reader-ch-epi"   id="reader-ch-epi" style="display:none;"></p>
+      <div class="reader-body"    id="reader-ch-body"></div>
+      <div class="reader-end">
+        <div class="chapter-end-ornament">✦ &nbsp; ✦ &nbsp; ✦</div>
+        <p class="reader-end-msg" id="reader-end-msg"></p>
+        <div class="chapter-nav"  id="chapter-nav"></div>
+      </div>
+    </div>
+
+    <div id="reader-not-found" style="display:none;">
+      <div class="toc-empty">
+        <span class="toc-empty-icon">🔍</span>
+        Chapter not found.<br>
+        <a href="chapters.html" style="color:var(--gold);font-size:.9rem;">
+          ← Back to chapters
+        </a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer id="site-footer">
+  <p class="footer-title"  id="footer-title">My Novel</p>
+  <p class="footer-copy"   id="footer-copy">© 2025 · All rights reserved.</p>
+  <p class="footer-legal">Unauthorised reproduction of this work is prohibited.</p>
+  <p class="footer-author-link"><a href="login.html">✒ Author Login</a></p>
+</footer>
+
+<!-- ══ GATE ══ -->
+<div id="gate-overlay">
+  <div id="gate-box">
+    <button class="gate-x" onclick="closeGate()">×</button>
+    <div id="gate-form-wrap">
+      <h2 id="gate-heading">Unlock This Chapter</h2>
+      <p  id="gate-subtext">Join free to read all locked chapters and receive new episodes weekly.</p>
+      <input class="f-input" type="email" id="gate-email"
+             placeholder="your@email.com" style="margin-bottom:.75rem;">
+      <button class="btn btn-gold" id="gate-submit-btn"
+              style="width:100%;justify-content:center;"
+              onclick="submitGate()">
+        Unlock &amp; Subscribe
+      </button>
+      <p style="font-family:var(--sans);font-size:.72rem;
+                color:var(--ink-faint);margin-top:.6rem;max-width:none;">
+        No spam. Unsubscribe anytime.
+      </p>
+    </div>
+    <div id="gate-success">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none"
+           style="margin:0 auto 1rem;display:block;">
+        <circle cx="22" cy="22" r="20"
+                stroke="var(--green)" stroke-width="1.5"
+                fill="rgba(45,90,61,.08)"/>
+        <path d="M13 23l7 7 11-13"
+              stroke="var(--green)" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h2 style="color:var(--green);">Unlocked!</h2>
+      <p>Enjoy reading. New episodes arrive weekly.</p>
+      <button class="btn btn-gold" style="margin-top:1rem;"
+              onclick="closeGate();loadChapter()">
+        Continue Reading
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="config.js"></script>
+<script src="shared.js"></script>
+<script>
+const params    = new URLSearchParams(location.search);
+const chapterId = params.get('id');
+let allChapters = [];
+let gateEnabled = true;
+
+/* ── font size ── */
+const sizes = { small:'0.95rem', normal:'1.1rem', large:'1.22rem', xlarge:'1.38rem' };
+
+function setSize(key) {
+  const body = document.getElementById('reader-ch-body');
+  if (body) body.style.fontSize = sizes[key] || '1.1rem';
+  document.querySelectorAll('.fsbtn').forEach(b => b.classList.remove('on'));
+  const target = document.querySelector(`.fsbtn[onclick="setSize('${key}')"]`);
+  if (target) target.classList.add('on');
+  localStorage.setItem('novel_font_size', key);
+  document.getElementById('font-controls').classList.remove('open');
+}
+
+function toggleFC() {
+  document.getElementById('font-controls').classList.toggle('open');
+}
+
+/* restore saved size */
+const savedSz = localStorage.getItem('novel_font_size');
+if (savedSz && sizes[savedSz]) {
+  document.querySelectorAll('.fsbtn').forEach(b => b.classList.remove('on'));
+  const t = document.querySelector(`.fsbtn[onclick="setSize('${savedSz}')"]`);
+  if (t) t.classList.add('on');
+}
+
+/* ── progress bar ── */
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  const pct   = total > 0 ? (window.scrollY / total) * 100 : 0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+
+/* ── load chapter ── */
+async function loadChapter() {
+  try {
+    const [s, chs] = await Promise.all([
+      getSettings(),
+      sbFetch('chapters?order=chapter_order.asc')
+    ]);
+
+    gateEnabled  = s.gate_enabled !== false;
+    const title  = s.title       || 'My Novel';
+    const author = s.author_name || 'Author Name';
+    const year   = new Date().getFullYear();
+
+    document.getElementById('footer-title').textContent =
+      title + ' · ' + author;
+    document.getElementById('footer-copy').textContent  =
+      '© ' + year + ' ' + author + ' · All rights reserved.';
+
+    const gh = document.getElementById('gate-heading');
+    const gs = document.getElementById('gate-subtext');
+    if (s.gate_title) gh.textContent = s.gate_title;
+    if (s.gate_msg)   gs.textContent = s.gate_msg;
+
+    allChapters = (chs || []).filter(c => c.status !== 'draft');
+
+    const ch  = allChapters.find(c => c.id === chapterId);
+    const idx = allChapters.findIndex(c => c.id === chapterId);
+
+    /* not found */
+    if (!ch) {
+      document.getElementById('reader-loading').style.display   = 'none';
+      document.getElementById('reader-not-found').style.display = 'block';
+      document.getElementById('page-title').textContent         = 'Not found';
+      return;
+    }
+
+    /* locked */
+    if (ch.status === 'locked' && gateEnabled && !isUnlocked()) {
+      document.getElementById('reader-loading').innerHTML =
+        `<p style="font-family:var(--serif);font-style:italic;
+                   color:var(--ink-soft);">
+           This chapter is locked.
+         </p>`;
+      openGate();
+      return;
+    }
+
+    /* ── render ── */
+    const label = ch.num || String(idx + 1);
+
+    document.getElementById('page-title').textContent =
+      'Ch. ' + label + ': ' + ch.title + ' — ' + title;
+    document.getElementById('reader-ch-label').textContent =
+      title + '  ·  Chapter ' + label;
+    document.getElementById('reader-ch-num').textContent   =
+      'Chapter ' + label;
+    document.getElementById('reader-ch-title').textContent = ch.title;
+
+    const epiEl = document.getElementById('reader-ch-epi');
+    if (ch.epigraph) {
+      epiEl.textContent   = ch.epigraph;
+      epiEl.style.display = 'block';
+    }
+
+    document.getElementById('reader-ch-body').innerHTML = ch.body || '';
+
+    /* restore font size after body is in DOM */
+    const sz = localStorage.getItem('novel_font_size');
+    if (sz && sizes[sz]) {
+      document.getElementById('reader-ch-body').style.fontSize = sizes[sz];
+    }
+
+    /* end message */
+    document.getElementById('reader-end-msg').textContent =
+      'End of Chapter ' + label;
+
+    /* ── prev / next ── */
+    const prev = allChapters[idx - 1];
+    const next = allChapters[idx + 1];
+    let navHTML = '';
+
+    if (prev) {
+      navHTML += `<a href="read.html?id=${prev.id}" class="btn btn-outline">
+                    ← Ch. ${esc(prev.num || String(idx))}
+                  </a>`;
+    }
+    if (next) {
+      const nl = next.status === 'locked' && gateEnabled && !isUnlocked();
+      navHTML += nl
+        ? `<button class="btn btn-gold" onclick="openGate()">
+             Unlock Ch. ${esc(next.num || String(idx + 2))} →
+           </button>`
+        : `<a href="read.html?id=${next.id}" class="btn btn-gold">
+             Ch. ${esc(next.num || String(idx + 2))} →
+           </a>`;
+    } else {
+      navHTML += `<button class="btn btn-dark" onclick="openGate()">
+                    Get notified of new episodes
+                  </button>`;
+    }
+    if (!prev && !next) {
+      navHTML = `<a href="chapters.html" class="btn btn-outline">
+                   ← Back to Chapters
+                 </a>`;
+    }
+
+    document.getElementById('chapter-nav').innerHTML = navHTML;
+
+    /* show */
+    document.getElementById('reader-loading').style.display = 'none';
+    document.getElementById('reader-content').style.display = 'block';
+
+  } catch (e) {
+    console.error(e);
+    document.getElementById('reader-loading').innerHTML =
+      `<div class="toc-empty">
+         Could not load chapter. Check config.js.
+       </div>`;
+  }
+}
+
+/* ── close font picker on outside click ── */
+document.addEventListener('click', e => {
+  const fc  = document.getElementById('font-controls');
+  const btn = document.getElementById('aa-btn');
+  if (fc.classList.contains('open') &&
+      !fc.contains(e.target) && e.target !== btn) {
+    fc.classList.remove('open');
+  }
+});
+
+/* ── gate events ── */
+document.getElementById('gate-overlay')
+  .addEventListener('click', e => {
+    if (e.target === document.getElementById('gate-overlay')) closeGate();
+  });
+document.getElementById('gate-email')
+  .addEventListener('keydown', e => { if (e.key === 'Enter') submitGate(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeGate();
+    document.getElementById('font-controls').classList.remove('open');
+  }
+});
+
+loadChapter();
+</script>
+</body>
+</html>

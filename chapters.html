@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Chapters</title>
+<meta name="description" id="page-desc" content="">
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── Filter bar ── */
+.filter-bar {
+  display: flex;
+  gap: .5rem;
+  flex-wrap: wrap;
+}
+.filter-btn {
+  font-family: var(--sans);
+  font-size: .7rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .3rem .9rem;
+  border-radius: 20px;
+  border: 1px solid var(--cream-deep);
+  background: transparent;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all .15s;
+}
+.filter-btn:hover,
+.filter-btn.active {
+  background: var(--dark);
+  color: var(--gold);
+  border-color: var(--dark);
+}
+
+/* ── Chapter rows ── */
+.ch-count {
+  font-family: var(--sans);
+  font-size: .78rem;
+  color: var(--ink-faint);
+}
+
+/* progress bar under header */
+.chapters-progress {
+  background: var(--cream-warm);
+  border-bottom: 1px solid var(--cream-deep);
+  padding: .6rem 0;
+}
+.chapters-progress-inner {
+  max-width: var(--content);
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .75rem;
+}
+
+/* toc-row override for chapters page — slightly more padding */
+.toc-section .toc-row {
+  padding: 1.25rem 0;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header id="site-header">
+  <div class="header-top">
+    <a href="index.html" class="site-logo" id="nav-logo">My Novel</a>
+    <button class="hamburger" id="hamburger-btn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav class="header-nav">
+    <a href="index.html"    class="nav-link">Home</a>
+    <a href="chapters.html" class="nav-link active">Chapters</a>
+    <a href="about.html"    class="nav-link">About</a>
+    <a href="contact.html"  class="nav-link">Contact</a>
+    <a href="#" class="nav-cta" onclick="openGate();return false;">Join Readers</a>
+  </nav>
+  <nav id="mobile-nav">
+    <a href="index.html">Home</a>
+    <a href="chapters.html" class="active">Chapters</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="#" onclick="openGate();return false;">Join Readers</a>
+  </nav>
+</header>
+
+<!-- ══ DARK HERO ══ -->
+<section class="book-hero" style="padding: 2.5rem 2rem;">
+  <h1 class="book-hero-title" id="hero-title"
+      style="font-size:clamp(1.6rem,4vw,2.4rem);margin-bottom:.4rem;">
+    Chapters
+  </h1>
+  <p class="book-hero-byline" id="hero-byline">All Episodes</p>
+  <div class="book-hero-stats" style="margin-top:1.25rem;padding-top:1.25rem;">
+    <div class="stat-block">
+      <span class="stat-num" id="stat-published">0</span>
+      <span class="stat-label">Published</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-num" id="stat-free">0</span>
+      <span class="stat-label">Free</span>
+    </div>
+    <div class="stat-block">
+      <span class="stat-num" id="stat-words">0</span>
+      <span class="stat-label">Words</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FILTER BAR ══ -->
+<div class="chapters-progress">
+  <div class="chapters-progress-inner">
+    <span class="ch-count" id="ch-count">Loading…</span>
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all"
+              onclick="setFilter(this)">All</button>
+      <button class="filter-btn" data-filter="free"
+              onclick="setFilter(this)">Free</button>
+      <button class="filter-btn" data-filter="locked"
+              onclick="setFilter(this)">Locked</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHAPTER LIST ══ -->
+<main>
+  <section class="toc-section">
+    <h2 class="toc-heading">Table of Contents</h2>
+    <hr class="toc-rule">
+    <div id="toc-list">
+      <div class="loading-state">
+        <span class="spinner"></span>
+        Loading chapters…
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer id="site-footer">
+  <p class="footer-title"  id="footer-title">My Novel</p>
+  <p class="footer-copy"   id="footer-copy">© 2025 · All rights reserved.</p>
+  <p class="footer-legal">Unauthorised reproduction of this work is prohibited.</p>
+  <p class="footer-author-link"><a href="login.html">✒ Author Login</a></p>
+</footer>
+
+<!-- ══ GATE ══ -->
+<div id="gate-overlay">
+  <div id="gate-box">
+    <button class="gate-x" onclick="closeGate()">×</button>
+    <div id="gate-form-wrap">
+      <h2 id="gate-heading">Unlock All Chapters</h2>
+      <p  id="gate-subtext">Join free — instant access to all published chapters plus weekly updates.</p>
+      <input class="f-input" type="email" id="gate-email"
+             placeholder="your@email.com" style="margin-bottom:.75rem;">
+      <button class="btn btn-gold" id="gate-submit-btn"
+              style="width:100%;justify-content:center;"
+              onclick="submitGate()">
+        Unlock &amp; Subscribe
+      </button>
+      <p style="font-family:var(--sans);font-size:.72rem;color:var(--ink-faint);
+                margin-top:.6rem;max-width:none;">
+        No spam. Unsubscribe anytime.
+      </p>
+    </div>
+    <div id="gate-success">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none"
+           style="margin:0 auto 1rem;display:block;">
+        <circle cx="22" cy="22" r="20"
+                stroke="var(--green)" stroke-width="1.5"
+                fill="rgba(45,90,61,.08)"/>
+        <path d="M13 23l7 7 11-13"
+              stroke="var(--green)" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h2 style="color:var(--green);">You're in.</h2>
+      <p>All chapters now unlocked. Enjoy reading!</p>
+      <button class="btn btn-gold" style="margin-top:1rem;"
+              onclick="closeGate();render()">
+        Start Reading
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="config.js"></script>
+<script src="shared.js"></script>
+<script>
+let allChapters = [];
+let gateEnabled = true;
+let currentFilter = 'all';
+
+/* ── render chapter list ── */
+function render() {
+  const tocEl = document.getElementById('toc-list');
+
+  let visible = allChapters.filter(c => c.status !== 'draft');
+
+  if (currentFilter === 'free')
+    visible = visible.filter(c => c.status === 'free' || isUnlocked());
+  if (currentFilter === 'locked')
+    visible = visible.filter(c => c.status === 'locked');
+
+  document.getElementById('ch-count').textContent =
+    visible.length + ' chapter' + (visible.length !== 1 ? 's' : '');
+
+  if (!visible.length) {
+    tocEl.innerHTML = `
+      <div class="toc-empty">
+        <span class="toc-empty-icon">📬</span>
+        No chapters here yet.
+      </div>`;
+    return;
+  }
+
+  tocEl.innerHTML = visible.map((ch, i) => {
+    const locked = ch.status === 'locked' && gateEnabled && !isUnlocked();
+    const label  = ch.num || String(i + 1);
+    const inner  = `
+      <div class="toc-num">${esc(label)}</div>
+      <div>
+        <div class="toc-title-d">${esc(ch.title)}</div>
+        ${ch.teaser ? `<div class="toc-teaser">${esc(ch.teaser)}</div>` : ''}
+      </div>
+      <span class="tag ${locked ? 'tag-locked' : 'tag-free'}">
+        ${locked ? '🔒' : 'Free'}
+      </span>`;
+
+    return locked
+      ? `<div class="toc-row toc-locked" onclick="openGate()">${inner}</div>`
+      : `<a href="read.html?id=${ch.id}" class="toc-row">${inner}</a>`;
+  }).join('');
+}
+
+/* ── filter buttons ── */
+function setFilter(btn) {
+  document.querySelectorAll('.filter-btn')
+    .forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = btn.dataset.filter;
+  render();
+}
+
+/* ── load ── */
+(async () => {
+  try {
+    const [s, chs] = await Promise.all([
+      getSettings(),
+      sbFetch('chapters?order=chapter_order.asc')
+    ]);
+
+    gateEnabled = s.gate_enabled !== false;
+
+    const title  = s.title       || 'My Novel';
+    const author = s.author_name || 'Author Name';
+    const year   = new Date().getFullYear();
+
+    document.getElementById('page-title').textContent  = 'Chapters — ' + title;
+    document.getElementById('nav-logo').textContent    = title;
+    document.getElementById('hero-title').textContent  = title;
+    document.getElementById('footer-title').textContent = title + ' · ' + author;
+    document.getElementById('footer-copy').textContent  =
+      '© ' + year + ' ' + author + ' · All rights reserved.';
+
+    // gate text
+    const gh = document.getElementById('gate-heading');
+    const gs = document.getElementById('gate-subtext');
+    if (s.gate_title) gh.textContent = s.gate_title;
+    if (s.gate_msg)   gs.textContent = s.gate_msg;
+
+    allChapters = chs || [];
+
+    // stats
+    const pub  = allChapters.filter(c => c.status !== 'draft');
+    const free = allChapters.filter(c => c.status === 'free');
+    const words = pub.reduce((sum, ch) => {
+      const text = (ch.body || '').replace(/<[^>]+>/g, ' ');
+      return sum + text.trim().split(/\s+/).filter(Boolean).length;
+    }, 0);
+
+    document.getElementById('stat-published').textContent = pub.length;
+    document.getElementById('stat-free').textContent      = free.length;
+    document.getElementById('stat-words').textContent     =
+      words > 999 ? (words / 1000).toFixed(1) + 'k' : words;
+
+    render();
+  } catch (e) {
+    console.error(e);
+    document.getElementById('toc-list').innerHTML =
+      `<div class="toc-empty">Could not load chapters. Check your config.js.</div>`;
+    document.getElementById('ch-count').textContent = '';
+  }
+})();
+
+/* ── hamburger ── */
+document.getElementById('hamburger-btn').addEventListener('click', () => {
+  const m = document.getElementById('mobile-nav');
+  m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+});
+
+/* ── gate ── */
+document.getElementById('gate-overlay')
+  .addEventListener('click', e => {
+    if (e.target === document.getElementById('gate-overlay')) closeGate();
+  });
+document.getElementById('gate-email')
+  .addEventListener('keydown', e => { if (e.key === 'Enter') submitGate(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGate(); });
+</script>
+</body>
+</html>

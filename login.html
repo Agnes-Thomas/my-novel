@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Author Login</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+/* full dark page */
+html, body {
+  background: var(--dark);
+  min-height: 100vh;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.login-wrap {
+  width: 100%;
+  max-width: 420px;
+}
+/* ornament */
+.login-mark {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.login-rule {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.login-rule::before,
+.login-rule::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gold-border);
+}
+.login-ornament {
+  font-family: var(--serif);
+  color: var(--gold-dim);
+  font-size: 1.1rem;
+  letter-spacing: .2em;
+}
+.login-logo {
+  display: block;
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gold);
+  text-decoration: none;
+  margin-bottom: .35rem;
+  transition: color .2s;
+}
+.login-logo:hover { color: var(--gold-light); }
+.login-back {
+  font-family: var(--sans);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  text-decoration: none;
+  transition: color .2s;
+}
+.login-back:hover { color: var(--gold); }
+/* card */
+.login-card {
+  background: var(--dark-mid);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius);
+  padding: 2.5rem 2.25rem;
+}
+.login-card h1 {
+  font-family: var(--serif);
+  font-size: 1.55rem;
+  font-weight: 600;
+  color: var(--gold);
+  text-align: center;
+  margin-bottom: .35rem;
+}
+.login-sub {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: .95rem;
+  color: var(--ink-faint);
+  text-align: center;
+  margin-bottom: 2rem;
+  max-width: none;
+  line-height: 1.55;
+}
+/* dark inputs */
+.login-card .f-input {
+  background: rgba(255,255,255,.05);
+  border-color: var(--gold-border);
+  color: #fff;
+}
+.login-card .f-input::placeholder { color: rgba(255,255,255,.22); }
+.login-card .f-input:focus        { border-color: var(--gold-dim);  }
+.login-card .field label          { color: var(--gold-dim); }
+#login-error {
+  font-family: var(--sans);
+  font-size: .8rem;
+  color: #e07070;
+  text-align: center;
+  margin-top: .5rem;
+  display: none;
+}
+/* hint */
+.login-hint {
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--gold-border);
+  border-radius: 3px;
+  padding: .8rem 1rem;
+  margin-top: 1.25rem;
+  text-align: center;
+}
+.login-hint p {
+  font-family: var(--sans);
+  font-size: .72rem;
+  color: rgba(255,255,255,.2);
+  line-height: 1.6;
+  max-width: none;
+}
+.login-hint strong { color: rgba(255,255,255,.38); }
+.login-bottom {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.login-bottom a {
+  font-family: var(--sans);
+  font-size: .74rem;
+  letter-spacing: .08em;
+  color: var(--gold-dim);
+  text-decoration: none;
+  transition: color .2s;
+}
+.login-bottom a:hover { color: var(--gold); }
+/* footer */
+#site-footer {
+  background: transparent;
+  border-top: 1px solid var(--gold-border);
+  padding: 1.5rem 2rem;
+  width: 100%;
+  margin-top: 3rem;
+}
+#site-footer .footer-copy,
+#site-footer .footer-legal      { color: rgba(255,255,255,.18); }
+#site-footer .footer-author-link a {
+  color: rgba(255,255,255,.18);
+  transition: color .2s;
+}
+#site-footer .footer-author-link a:hover { color: var(--gold-dim); }
+</style>
+</head>
+<body>
+
+<div class="login-wrap">
+
+  <!-- ornament + logo -->
+  <div class="login-mark">
+    <div class="login-rule">
+      <span class="login-ornament">✒</span>
+    </div>
+    <a href="index.html" class="login-logo" id="login-logo">My Novel</a>
+    <a href="index.html" class="login-back">← Back to site</a>
+  </div>
+
+  <!-- card -->
+  <div class="login-card">
+    <h1>Author Sign In</h1>
+    <p class="login-sub">
+      Access your dashboard to manage<br>chapters and settings
+    </p>
+
+    <div class="field">
+      <label for="login-pw">Password</label>
+      <input class="f-input" type="password" id="login-pw"
+             placeholder="Enter your password"
+             autocomplete="current-password">
+      <div id="login-error">Incorrect password. Please try again.</div>
+    </div>
+
+    <button class="btn btn-gold" id="login-btn"
+            style="width:100%;justify-content:center;margin-top:.25rem;"
+            onclick="doLogin()">
+      Sign In to Dashboard
+    </button>
+
+    <div class="login-hint">
+      <p>Default password: <strong>author123</strong><br>
+         Change it in Dashboard → Settings after signing in.</p>
+    </div>
+  </div>
+
+  <div class="login-bottom">
+    <a href="index.html">← Return to the reader site</a>
+  </div>
+
+</div>
+
+<footer id="site-footer">
+  <p class="footer-copy"  id="footer-copy" style="text-align:center;">
+    © 2025 · All rights reserved.
+  </p>
+  <p class="footer-legal" style="text-align:center;">
+    Unauthorised reproduction of this work is prohibited.
+  </p>
+</footer>
+
+<div id="toast"></div>
+
+<script src="config.js"></script>
+<script src="shared.js"></script>
+<script>
+async function doLogin() {
+  const pw  = document.getElementById('login-pw').value;
+  const btn = document.getElementById('login-btn');
+  const err = document.getElementById('login-error');
+
+  if (!pw) { toast('Please enter your password'); return; }
+
+  btn.disabled  = true;
+  btn.innerHTML = '<span class="spinner" style="border-top-color:var(--dark);"></span> Signing in…';
+  err.style.display = 'none';
+
+  try {
+    const s      = await getSettings();
+    const stored = s.password || 'author123';
+
+    if (pw === stored) {
+      sessionStorage.setItem('novel_auth',     btoa(pw));
+      sessionStorage.setItem('novel_pw_cache', pw);
+      window.location.href = 'dashboard.html';
+    } else {
+      err.style.display = 'block';
+      btn.disabled      = false;
+      btn.textContent   = 'Sign In to Dashboard';
+      document.getElementById('login-pw').value = '';
+      document.getElementById('login-pw').focus();
+    }
+  } catch (e) {
+    toast('Connection error — check your config.js');
+    btn.disabled    = false;
+    btn.textContent = 'Sign In to Dashboard';
+  }
+}
+
+/* enter key */
+document.getElementById('login-pw')
+  .addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+
+/* already logged in → skip straight to dashboard */
+const cached = sessionStorage.getItem('novel_pw_cache');
+if (cached) {
+  getSettings()
+    .then(s => {
+      if (cached === (s.password || 'author123'))
+        window.location.href = 'dashboard.html';
+    })
+    .catch(() => {});
+}
+
+/* update logo + footer from live settings */
+getSettings()
+  .then(s => {
+    const title  = s.title       || 'My Novel';
+    const author = s.author_name || '';
+    const year   = new Date().getFullYear();
+    document.getElementById('login-logo').textContent  = title;
+    document.getElementById('footer-copy').textContent =
+      '© ' + year + (author ? ' ' + author : '') + ' · All rights reserved.';
+  })
+  .catch(() => {});
+</script>
+</body>
+</html>

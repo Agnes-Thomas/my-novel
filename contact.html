@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Contact</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+.contact-hero {
+  background: var(--dark);
+  border-bottom: 2px solid var(--gold-dim);
+  padding: 3rem 2rem;
+  text-align: center;
+}
+.contact-hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: .5rem;
+}
+.contact-hero p {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 1.05rem;
+  max-width: none;
+}
+
+.contact-body {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 4rem 2rem 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* ── message form card ── */
+.form-card {
+  background: #fff;
+  border: 1px solid var(--cream-deep);
+  border-radius: var(--radius);
+  padding: 2.25rem;
+}
+.form-card h2 {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  padding-bottom: .6rem;
+  border-bottom: 1px solid var(--cream-deep);
+}
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+#contact-success { display: none; text-align: center; padding: 1.5rem 0; }
+#contact-success h3 {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--green);
+  margin-bottom: .5rem;
+}
+#contact-success p {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-soft);
+  max-width: none;
+  margin-bottom: 1.25rem;
+}
+
+/* ── right column cards ── */
+.info-card {
+  background: var(--cream-warm);
+  border: 1px solid var(--cream-deep);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+.info-card h3 {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: .5rem;
+}
+.info-card p {
+  font-family: var(--serif);
+  font-size: .95rem;
+  color: var(--ink-soft);
+  line-height: 1.75;
+  max-width: none;
+}
+
+/* ── newsletter card ── */
+.nl-card {
+  background: var(--dark);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius);
+  padding: 2rem;
+  text-align: center;
+}
+.nl-card h3 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: .4rem;
+}
+.nl-card p {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: .95rem;
+  margin-bottom: 1.5rem;
+  max-width: none;
+  line-height: 1.65;
+}
+.nl-input {
+  width: 100%;
+  padding: .75rem 1rem;
+  border: 1px solid var(--gold-border);
+  border-radius: 3px;
+  background: rgba(255,255,255,.06);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: .95rem;
+  outline: none;
+  transition: border-color .2s;
+  margin-bottom: .75rem;
+}
+.nl-input::placeholder { color: rgba(255,255,255,.3); }
+.nl-input:focus { border-color: var(--gold-dim); }
+#nl-success { display: none; padding: .5rem 0; }
+#nl-success p {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--gold-dim);
+  max-width: none;
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .contact-body { grid-template-columns: 1fr; gap: 2.5rem; }
+  .form-row     { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header id="site-header">
+  <div class="header-top">
+    <a href="index.html" class="site-logo" id="nav-logo">My Novel</a>
+    <button class="hamburger" id="hamburger-btn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav class="header-nav">
+    <a href="index.html"    class="nav-link">Home</a>
+    <a href="chapters.html" class="nav-link">Chapters</a>
+    <a href="about.html"    class="nav-link">About</a>
+    <a href="contact.html"  class="nav-link active">Contact</a>
+    <a href="#" class="nav-cta" onclick="openGate();return false;">Join Readers</a>
+  </nav>
+  <nav id="mobile-nav">
+    <a href="index.html">Home</a>
+    <a href="chapters.html">Chapters</a>
+    <a href="about.html">About</a>
+    <a href="contact.html" class="active">Contact</a>
+    <a href="#" onclick="openGate();return false;">Join Readers</a>
+  </nav>
+</header>
+
+<!-- ══ DARK HERO ══ -->
+<section class="contact-hero">
+  <h1>Get in Touch</h1>
+  <p>Questions, feedback, or just want to say hello.</p>
+</section>
+
+<!-- ══ BODY ══ -->
+<main>
+  <div class="contact-body">
+
+    <!-- LEFT: contact form -->
+    <div class="form-card">
+      <h2>Send a Message</h2>
+
+      <div id="contact-form">
+        <div class="form-row">
+          <div class="field">
+            <label for="cf-name">Name</label>
+            <input class="f-input" type="text" id="cf-name"
+                   placeholder="Your name">
+          </div>
+          <div class="field">
+            <label for="cf-email">Email</label>
+            <input class="f-input" type="email" id="cf-email"
+                   placeholder="your@email.com">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="cf-subject">Subject</label>
+          <select class="f-input" id="cf-subject">
+            <option value="">Select a topic…</option>
+            <option>Question about the story</option>
+            <option>Character or plot feedback</option>
+            <option>Just saying hi</option>
+            <option>Collaboration</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="cf-msg">Message</label>
+          <textarea class="f-input" id="cf-msg"
+                    style="min-height:140px;"
+                    placeholder="Write your message here…"></textarea>
+        </div>
+
+        <button class="btn btn-gold" id="cf-btn"
+                style="width:100%;justify-content:center;"
+                onclick="sendContact()">
+          Send Message
+        </button>
+        <p style="font-family:var(--sans);font-size:.73rem;
+                  color:var(--ink-faint);margin-top:.75rem;max-width:none;">
+          Messages are delivered to the Author Dashboard.
+        </p>
+      </div>
+
+      <!-- success state -->
+      <div id="contact-success">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none"
+             style="margin:0 auto 1rem;display:block;">
+          <circle cx="24" cy="24" r="22"
+                  stroke="var(--green)" stroke-width="1.5"
+                  fill="rgba(45,90,61,.08)"/>
+          <path d="M14 25l8 8 12-15"
+                stroke="var(--green)" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>Message sent!</h3>
+        <p>Thanks for reaching out. Every message is read personally.</p>
+        <button class="btn btn-outline" onclick="resetContact()">
+          Send Another
+        </button>
+      </div>
+    </div>
+
+    <!-- RIGHT: info + newsletter -->
+    <div>
+
+      <div class="info-card">
+        <span class="eyebrow">Response Time</span>
+        <h3>I read every message</h3>
+        <p>
+          This is a solo project — replies may take a few days,
+          but every message reaches the author directly.
+          Your thoughts on the story are always welcome.
+        </p>
+      </div>
+
+      <div class="info-card">
+        <span class="eyebrow">Reader Community</span>
+        <h3>Stay connected</h3>
+        <p>
+          The best way to follow the story is through the
+          reader list. You'll get new chapters delivered to
+          your inbox, plus occasional notes from behind the writing.
+        </p>
+        <div style="margin-top:1rem;">
+          <a href="#" class="btn btn-outline"
+             onclick="openGate();return false;">
+            Join Free →
+          </a>
+        </div>
+      </div>
+
+      <!-- newsletter card -->
+      <div class="nl-card">
+        <span class="eyebrow"
+              style="color:var(--gold-dim);">Never Miss an Episode</span>
+        <h3>Subscribe to New Chapters</h3>
+        <p>New episodes delivered to your inbox, every week.</p>
+
+        <div id="nl-form">
+          <input class="nl-input" type="email" id="nl-email"
+                 placeholder="your@email.com">
+          <button class="btn btn-gold" id="nl-btn"
+                  style="width:100%;justify-content:center;"
+                  onclick="joinNewsletter()">
+            Subscribe Free
+          </button>
+          <p style="font-family:var(--sans);font-size:.7rem;
+                    color:rgba(255,255,255,.25);margin-top:.6rem;
+                    max-width:none;">
+            No spam. Unsubscribe anytime.
+          </p>
+        </div>
+
+        <div id="nl-success">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none"
+               style="margin:0 auto .75rem;display:block;">
+            <circle cx="19" cy="19" r="17"
+                    stroke="var(--gold-dim)" stroke-width="1.5"
+                    fill="rgba(201,168,76,.08)"/>
+            <path d="M11 20l6 6 10-12"
+                  stroke="var(--gold)" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <p>You're subscribed! New chapters will arrive in your inbox.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer id="site-footer">
+  <p class="footer-title"  id="footer-title">My Novel</p>
+  <p class="footer-copy"   id="footer-copy">© 2025 · All rights reserved.</p>
+  <p class="footer-legal">Unauthorised reproduction of this work is prohibited.</p>
+  <p class="footer-author-link"><a href="login.html">✒ Author Login</a></p>
+</footer>
+
+<!-- ══ GATE ══ -->
+<div id="gate-overlay">
+  <div id="gate-box">
+    <button class="gate-x" onclick="closeGate()">×</button>
+    <div id="gate-form-wrap">
+      <h2 id="gate-heading">Unlock All Chapters</h2>
+      <p  id="gate-subtext">Join free — instant access plus weekly updates.</p>
+      <input class="f-input" type="email" id="gate-email"
+             placeholder="your@email.com" style="margin-bottom:.75rem;">
+      <button class="btn btn-gold" id="gate-submit-btn"
+              style="width:100%;justify-content:center;"
+              onclick="submitGate()">
+        Unlock &amp; Subscribe
+      </button>
+      <p style="font-family:var(--sans);font-size:.72rem;
+                color:var(--ink-faint);margin-top:.6rem;max-width:none;">
+        No spam. Unsubscribe anytime.
+      </p>
+    </div>
+    <div id="gate-success">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none"
+           style="margin:0 auto 1rem;display:block;">
+        <circle cx="22" cy="22" r="20"
+                stroke="var(--green)" stroke-width="1.5"
+                fill="rgba(45,90,61,.08)"/>
+        <path d="M13 23l7 7 11-13"
+              stroke="var(--green)" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h2 style="color:var(--green);">You're in.</h2>
+      <p>All chapters now unlocked.</p>
+      <a href="chapters.html" class="btn btn-gold" style="margin-top:1rem;">
+        Start Reading
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="config.js"></script>
+<script src="shared.js"></script>
+<script>
+/* ── send contact message ── */
+async function sendContact() {
+  const name    = document.getElementById('cf-name').value.trim();
+  const email   = document.getElementById('cf-email').value.trim();
+  const subject = document.getElementById('cf-subject').value;
+  const msg     = document.getElementById('cf-msg').value.trim();
+
+  if (!name)  return toast('Please enter your name');
+  if (!email || !email.includes('@')) return toast('Please enter a valid email');
+  if (!msg)   return toast('Please write a message');
+
+  const btn = document.getElementById('cf-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Sending…';
+
+  try {
+    await sbFetch('messages', {
+      method: 'POST',
+      body:   { name, email, subject, body: msg },
+      prefer: 'return=minimal'
+    });
+    document.getElementById('contact-form').style.display    = 'none';
+    document.getElementById('contact-success').style.display = 'block';
+  } catch (e) {
+    toast('Could not send — please try again');
+    btn.disabled = false;
+    btn.textContent = 'Send Message';
+  }
+}
+
+/* ── reset form ── */
+function resetContact() {
+  ['cf-name','cf-email','cf-msg'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('cf-subject').value              = '';
+  document.getElementById('contact-form').style.display    = 'block';
+  document.getElementById('contact-success').style.display = 'none';
+  const btn = document.getElementById('cf-btn');
+  btn.disabled    = false;
+  btn.textContent = 'Send Message';
+}
+
+/* ── newsletter signup ── */
+async function joinNewsletter() {
+  const em  = document.getElementById('nl-email').value.trim();
+  const btn = document.getElementById('nl-btn');
+
+  if (!em || !em.includes('@') || !em.includes('.')) {
+    toast('Please enter a valid email'); return;
+  }
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>';
+
+  try {
+    await sbFetch('readers', {
+      method: 'POST',
+      body:   { email: em },
+      prefer: 'return=minimal'
+    });
+  } catch (e) { /* duplicate OK */ }
+
+  sessionStorage.setItem('novel_unlocked', '1');
+  document.getElementById('nl-form').style.display    = 'none';
+  document.getElementById('nl-success').style.display = 'block';
+}
+
+/* ── load settings ── */
+(async () => {
+  try {
+    const s = await getSettings();
+    const title  = s.title       || 'My Novel';
+    const author = s.author_name || 'Author Name';
+    const year   = new Date().getFullYear();
+
+    document.getElementById('page-title').textContent   = 'Contact — ' + title;
+    document.getElementById('nav-logo').textContent     = title;
+    document.getElementById('footer-title').textContent = title + ' · ' + author;
+    document.getElementById('footer-copy').textContent  =
+      '© ' + year + ' ' + author + ' · All rights reserved.';
+
+    const gh = document.getElementById('gate-heading');
+    const gs = document.getElementById('gate-subtext');
+    if (s.gate_title) gh.textContent = s.gate_title;
+    if (s.gate_msg)   gs.textContent = s.gate_msg;
+  } catch (e) { console.error(e); }
+})();
+
+/* ── hamburger ── */
+document.getElementById('hamburger-btn').addEventListener('click', () => {
+  const m = document.getElementById('mobile-nav');
+  m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+});
+
+/* ── nl-email enter key ── */
+document.getElementById('nl-email')
+  .addEventListener('keydown', e => { if (e.key === 'Enter') joinNewsletter(); });
+
+/* ── gate ── */
+document.getElementById('gate-overlay')
+  .addEventListener('click', e => {
+    if (e.target === document.getElementById('gate-overlay')) closeGate();
+  });
+document.getElementById('gate-email')
+  .addEventListener('keydown', e => { if (e.key === 'Enter') submitGate(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGate(); });
+</script>
+</body>
+</html>

@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">About</title>
+<meta name="description" id="page-desc" content="">
+<link rel="stylesheet" href="shared.css">
+<style>
+/* ── page hero ── */
+.about-hero {
+  background: var(--dark);
+  border-bottom: 2px solid var(--gold-dim);
+  padding: 3rem 2rem;
+  text-align: center;
+}
+.about-hero h1 {
+  font-family: var(--serif);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: .5rem;
+}
+.about-hero p {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-faint);
+  font-size: 1.05rem;
+  max-width: none;
+}
+
+/* ── two-col layout ── */
+.about-body {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 4rem 2rem 5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+/* ── novel section ── */
+.about-block { margin-bottom: 3rem; }
+.about-block h2 {
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  padding-bottom: .6rem;
+  border-bottom: 1px solid var(--cream-deep);
+}
+.about-block p {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  line-height: 1.85;
+  color: var(--ink-mid);
+  margin-bottom: 1.1em;
+}
+
+/* ── author card ── */
+.author-card {
+  background: var(--dark);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius);
+  padding: 2.25rem;
+  margin-bottom: 2rem;
+}
+.author-avatar {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  background: var(--dark-mid);
+  border: 2px solid var(--gold-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+.author-name {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: .15rem;
+}
+.author-role {
+  font-family: var(--sans);
+  font-size: .7rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 1rem;
+}
+.author-bio-text {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--ink-faint);
+  max-width: none;
+}
+
+/* ── subscribe card ── */
+.subscribe-card {
+  background: var(--cream-warm);
+  border: 1px solid var(--cream-deep);
+  border-radius: var(--radius);
+  padding: 2rem;
+  text-align: center;
+}
+.subscribe-card h3 {
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin-bottom: .4rem;
+}
+.subscribe-card p {
+  font-family: var(--serif);
+  font-style: italic;
+  color: var(--ink-soft);
+  font-size: .95rem;
+  margin-bottom: 1.25rem;
+  max-width: none;
+  line-height: 1.6;
+}
+
+/* ── FAQ ── */
+.faq-list { margin-top: 0; }
+.faq-item {
+  border-bottom: 1px solid var(--cream-deep);
+}
+.faq-item:first-child { border-top: 1px solid var(--cream-deep); }
+.faq-q {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--serif);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  color: var(--ink);
+  transition: color .2s;
+}
+.faq-q:hover { color: var(--gold); }
+.faq-icon {
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: var(--gold-dim);
+  flex-shrink: 0;
+  transition: transform .25s;
+  line-height: 1;
+}
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-a {
+  display: none;
+  font-family: var(--serif);
+  font-size: .95rem;
+  color: var(--ink-soft);
+  line-height: 1.8;
+  padding-bottom: 1.1rem;
+}
+.faq-item.open .faq-a { display: block; }
+
+@media (max-width: 768px) {
+  .about-body { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header id="site-header">
+  <div class="header-top">
+    <a href="index.html" class="site-logo" id="nav-logo">My Novel</a>
+    <button class="hamburger" id="hamburger-btn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav class="header-nav">
+    <a href="index.html"    class="nav-link">Home</a>
+    <a href="chapters.html" class="nav-link">Chapters</a>
+    <a href="about.html"    class="nav-link active">About</a>
+    <a href="contact.html"  class="nav-link">Contact</a>
+    <a href="#" class="nav-cta" onclick="openGate();return false;">Join Readers</a>
+  </nav>
+  <nav id="mobile-nav">
+    <a href="index.html">Home</a>
+    <a href="chapters.html">Chapters</a>
+    <a href="about.html" class="active">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="#" onclick="openGate();return false;">Join Readers</a>
+  </nav>
+</header>
+
+<!-- ══ DARK HERO ══ -->
+<section class="about-hero">
+  <h1 id="about-h1">About</h1>
+  <p  id="about-sub">The story and the person behind it.</p>
+</section>
+
+<!-- ══ BODY ══ -->
+<main>
+  <div class="about-body">
+
+    <!-- LEFT: novel description + FAQ -->
+    <div>
+      <!-- Novel description -->
+      <div class="about-block">
+        <h2 id="novel-h2">The Novel</h2>
+        <div id="novel-desc">
+          <div class="loading-state" style="padding:1.5rem 0;">
+            <span class="spinner"></span>
+          </div>
+        </div>
+        <div style="margin-top:1.75rem;">
+          <a href="chapters.html" class="btn btn-gold">Start Reading →</a>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="about-block">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-list">
+
+          <div class="faq-item">
+            <button class="faq-q" onclick="faq(this)">
+              What is this novel about?
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a" id="faq-about">
+              Set your novel description in the Author Dashboard
+              and it will appear here.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" onclick="faq(this)">
+              How do I read it?
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a">
+              The first few chapters are completely free —
+              no account required. To unlock all chapters and
+              receive new episodes in your inbox, join the reader
+              list. It's free.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" onclick="faq(this)">
+              How often are new chapters published?
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a" id="faq-schedule">
+              New chapters are published on a regular schedule.
+              Join the reader list to be notified the moment
+              each new episode goes live.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" onclick="faq(this)">
+              Will the full novel be available?
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a">
+              Yes. This is a complete story being published
+              chapter by chapter. Every episode is written
+              with the full arc already in mind.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-q" onclick="faq(this)">
+              Is it free to read?
+              <span class="faq-icon">+</span>
+            </button>
+            <div class="faq-a">
+              The first chapters are completely free. To unlock
+              all episodes, simply join the reader list with your
+              email address — no payment needed, ever.
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: author card + subscribe -->
+    <div>
+      <!-- Author card -->
+      <span class="eyebrow">The Author</span>
+      <div class="author-card" id="author-card">
+        <div class="loading-state" style="padding:1rem 0;">
+          <span class="spinner"></span>
+        </div>
+      </div>
+
+      <!-- Subscribe nudge -->
+      <div class="subscribe-card">
+        <span class="eyebrow">Stay Updated</span>
+        <h3>Get Each Chapter First</h3>
+        <p>New episodes delivered to your inbox every week.</p>
+        <a href="#" class="btn btn-gold"
+           style="width:100%;justify-content:center;"
+           onclick="openGate();return false;">
+          Join Readers — It's Free
+        </a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer id="site-footer">
+  <p class="footer-title"  id="footer-title">My Novel</p>
+  <p class="footer-copy"   id="footer-copy">© 2025 · All rights reserved.</p>
+  <p class="footer-legal">Unauthorised reproduction of this work is prohibited.</p>
+  <p class="footer-author-link"><a href="login.html">✒ Author Login</a></p>
+</footer>
+
+<!-- ══ GATE ══ -->
+<div id="gate-overlay">
+  <div id="gate-box">
+    <button class="gate-x" onclick="closeGate()">×</button>
+    <div id="gate-form-wrap">
+      <h2 id="gate-heading">Unlock All Chapters</h2>
+      <p  id="gate-subtext">Join free — instant access plus weekly updates.</p>
+      <input class="f-input" type="email" id="gate-email"
+             placeholder="your@email.com" style="margin-bottom:.75rem;">
+      <button class="btn btn-gold" id="gate-submit-btn"
+              style="width:100%;justify-content:center;"
+              onclick="submitGate()">
+        Unlock &amp; Subscribe
+      </button>
+      <p style="font-family:var(--sans);font-size:.72rem;
+                color:var(--ink-faint);margin-top:.6rem;max-width:none;">
+        No spam. Unsubscribe anytime.
+      </p>
+    </div>
+    <div id="gate-success">
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none"
+           style="margin:0 auto 1rem;display:block;">
+        <circle cx="22" cy="22" r="20"
+                stroke="var(--green)" stroke-width="1.5"
+                fill="rgba(45,90,61,.08)"/>
+        <path d="M13 23l7 7 11-13"
+              stroke="var(--green)" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h2 style="color:var(--green);">You're in.</h2>
+      <p>All chapters now unlocked.</p>
+      <a href="chapters.html" class="btn btn-gold" style="margin-top:1rem;">
+        Start Reading
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="config.js"></script>
+<script src="shared.js"></script>
+<script>
+/* ── FAQ accordion ── */
+function faq(btn) {
+  const item   = btn.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); faq(q); }
+  });
+});
+
+/* ── load ── */
+(async () => {
+  try {
+    const s = await getSettings();
+
+    const title  = s.title       || 'My Novel';
+    const author = s.author_name || 'Author Name';
+    const year   = new Date().getFullYear();
+
+    document.getElementById('page-title').textContent   = 'About — ' + title;
+    document.getElementById('nav-logo').textContent     = title;
+    document.getElementById('about-h1').textContent     = 'About ' + title;
+    document.getElementById('about-sub').textContent    = s.tagline || 'The story and the person behind it.';
+    document.getElementById('novel-h2').textContent     = title;
+    document.getElementById('footer-title').textContent = title + ' · ' + author;
+    document.getElementById('footer-copy').textContent  =
+      '© ' + year + ' ' + author + ' · All rights reserved.';
+
+    /* gate text */
+    const gh = document.getElementById('gate-heading');
+    const gs = document.getElementById('gate-subtext');
+    if (s.gate_title) gh.textContent = s.gate_title;
+    if (s.gate_msg)   gs.textContent = s.gate_msg;
+
+    /* novel description */
+    if (s.description) {
+      document.getElementById('novel-desc').innerHTML =
+        s.description
+          .split(/\n\n+/)
+          .map(p => `<p>${esc(p.trim())}</p>`)
+          .join('');
+      document.getElementById('faq-about').textContent = s.description;
+    } else {
+      document.getElementById('novel-desc').innerHTML =
+        `<p style="color:var(--ink-soft);font-style:italic;">
+           Set your novel description in the Author Dashboard.
+         </p>`;
+    }
+
+    /* schedule FAQ answer */
+    if (s.schedule) {
+      document.getElementById('faq-schedule').textContent =
+        'New chapters are published ' + s.schedule.toLowerCase() +
+        '. Join the reader list to get notified the moment each one goes live.';
+    }
+
+    /* author card */
+    const initial  = author.charAt(0).toUpperCase();
+    const bioText  = s.author_bio ||
+      'Set your author bio in Dashboard → Settings. It will appear here.';
+    document.getElementById('author-card').innerHTML = `
+      <div class="author-avatar">${esc(initial)}</div>
+      <div class="author-name">${esc(author)}</div>
+      <div class="author-role">Author</div>
+      <p class="author-bio-text">${esc(bioText)}</p>`;
+
+  } catch (e) {
+    console.error(e);
+    document.getElementById('novel-desc').innerHTML =
+      `<p style="color:var(--ink-soft);">
+         Could not load settings. Check your config.js.
+       </p>`;
+    document.getElementById('author-card').innerHTML =
+      `<p style="color:var(--gold-dim);font-family:var(--sans);font-size:.85rem;">
+         Could not load author info.
+       </p>`;
+  }
+})();
+
+/* ── hamburger ── */
+document.getElementById('hamburger-btn').addEventListener('click', () => {
+  const m = document.getElementById('mobile-nav');
+  m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+});
+
+/* ── gate ── */
+document.getElementById('gate-overlay')
+  .addEventListener('click', e => {
+    if (e.target === document.getElementById('gate-overlay')) closeGate();
+  });
+document.getElementById('gate-email')
+  .addEventListener('keydown', e => { if (e.key === 'Enter') submitGate(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGate(); });
+</script>
+</body>
+</html>

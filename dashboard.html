@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<link rel="stylesheet" href="shared.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.min.js"></script>
+<style>
+html,body { background:#1e1800; display:block; min-height:100vh; }
+
+/* ── dash header ── */
+#dash-header {
+  background: var(--dark);
+  border-bottom: 1px solid var(--gold-dim);
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 58px;
+  position: sticky; top: 0; z-index: 100;
+}
+.dash-logo {
+  font-family: var(--serif);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--gold);
+  text-decoration: none;
+}
+.dash-logo:hover { color: var(--gold-light); }
+.dash-header-right { display:flex; align-items:center; gap:1.5rem; }
+.dash-header-right a,
+.dash-header-right button {
+  font-family: var(--sans);
+  font-size: .73rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  background: none; border: none;
+  cursor: pointer; text-decoration: none;
+  transition: color .2s;
+}
+.dash-header-right a:hover,
+.dash-header-right button:hover { color: var(--gold); }
+.dash-sep { color: var(--gold-border); font-size: .9rem; }
+
+/* ── tabs ── */
+#dash-tabs {
+  background: var(--dark-mid);
+  border-bottom: 1px solid var(--gold-border);
+  padding: 0 2rem;
+  display: flex;
+  overflow-x: auto;
+}
+.tab-btn {
+  font-family: var(--sans);
+  font-size: .73rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  background: none; border: none;
+  border-bottom: 2px solid transparent;
+  padding: .9rem 1.2rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color .2s, border-color .2s;
+}
+.tab-btn:hover { color: var(--gold); }
+.tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ── panels ── */
+.panel { display:none; max-width:900px; margin:0 auto; padding:2.5rem 2rem; }
+.panel.active { display:block; }
+
+/* ── stat cards ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.stat-card {
+  background: var(--dark);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-align: center;
+}
+.stat-card .stat-num  { font-size: 2.2rem; color: var(--gold); display:block; font-family:var(--serif); font-weight:600; line-height:1; }
+.stat-card .stat-label{ font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--gold-dim); margin-top:.35rem; display:block; font-family:var(--sans); }
+
+/* ── dash card ── */
+.dcard {
+  background: var(--dark);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+.dcard-head {
+  display: flex; align-items:center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap; gap:.75rem;
+}
+.dcard-head h2 {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+/* ── chapter list in dash ── */
+#dash-ch-list {
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.dch-row {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 1rem; align-items: center;
+  padding: 1rem 1.25rem;
+  background: var(--dark-mid);
+  border-bottom: 1px solid var(--gold-border);
+  transition: background .15s;
+}
+.dch-row:last-child { border-bottom: none; }
+.dch-row:hover { background: rgba(255,255,255,.03); }
+.drag-h { color: var(--gold-border); text-align:center; cursor:grab; user-select:none; font-size:.9rem; }
+.dch-info { min-width:0; }
+.dch-title {
+  font-family: var(--serif);
+  font-size: .98rem; font-weight:500;
+  color: var(--gold-light);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.dch-sub {
+  font-family: var(--sans);
+  font-size: .74rem; color: var(--gold-dim);
+  margin-top:.1rem;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.dch-acts { display:flex; align-items:center; gap:.35rem; flex-shrink:0; }
+.ib {
+  background:none; border:none; cursor:pointer;
+  color: var(--gold-dim); font-size:.88rem;
+  padding:.22rem .3rem; border-radius:2px;
+  transition:color .15s;
+}
+.ib:hover { color: var(--gold); }
+.ib.del:hover { color: #e07070; }
+
+/* ── settings fields on dark ── */
+.panel .f-input {
+  background: rgba(255,255,255,.05);
+  border-color: var(--gold-border);
+  color: #fff;
+}
+.panel .f-input::placeholder { color:rgba(255,255,255,.22); }
+.panel .f-input:focus         { border-color: var(--gold-dim); }
+.panel .field label           { color: var(--gold-dim); }
+.panel .field-hint            { color: rgba(255,255,255,.2); }
+select.f-input option         { background:#1a1400; color:#fff; }
+
+/* toggle rows in settings */
+.toggle-row {
+  display:flex; align-items:center;
+  justify-content:space-between;
+  padding:.9rem 0;
+  border-bottom:1px solid var(--gold-border);
+  gap:1rem;
+}
+.toggle-row:last-child { border-bottom:none; }
+.tl { font-family:var(--serif); font-size:.95rem; color:var(--gold-light); }
+.th { font-family:var(--sans); font-size:.74rem; color:var(--gold-dim); margin-top:.1rem; }
+.toggle-row .f-input { width:220px; flex-shrink:0; }
+
+/* readers list */
+.email-pill {
+  font-family:var(--sans); font-size:.82rem;
+  padding:.28rem .7rem;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--gold-border);
+  border-radius:20px;
+  color:var(--gold-dim);
+  display:inline-block; margin:.2rem;
+}
+
+/* messages */
+.msg-card {
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--gold-border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: .75rem;
+}
+.msg-head {
+  display:flex; align-items:center;
+  justify-content:space-between;
+  margin-bottom:.5rem; flex-wrap:wrap; gap:.5rem;
+}
+.msg-from  { font-family:var(--serif); font-size:.95rem; color:var(--gold); font-weight:500; }
+.msg-date  { font-family:var(--sans);  font-size:.72rem; color:var(--gold-dim); }
+.msg-subj  { font-family:var(--sans);  font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-dim); margin-bottom:.4rem; }
+.msg-body  { font-family:var(--serif); font-size:.92rem; color:rgba(255,255,255,.55); line-height:1.65; }
+
+/* ── chapter editor modal ── */
+#ch-modal {
+  display:none;
+  position:fixed; inset:0; z-index:500;
+  background:rgba(10,8,0,.75);
+  overflow-y:auto; padding:2rem 1rem;
+}
+#ch-modal.open { display:block; }
+#ch-modal-box {
+  background: var(--dark);
+  border: 1px solid var(--gold-dim);
+  width:100%; max-width:920px;
+  margin:0 auto;
+  border-radius: var(--radius);
+  overflow:hidden;
+}
+#ch-modal-head {
+  display:flex; align-items:center;
+  justify-content:space-between;
+  padding:1.2rem 1.75rem;
+  border-bottom:1px solid var(--gold-border);
+  background: var(--dark-mid);
+}
+#ch-modal-head h3 {
+  font-family:var(--serif); font-size:1.3rem;
+  font-weight:600; color:var(--gold);
+}
+#ch-modal-body { padding:1.75rem; }
+#ch-modal-foot {
+  display:flex; align-items:center;
+  justify-content:flex-end;
+  gap:.75rem; padding:1.2rem 1.75rem;
+  border-top:1px solid var(--gold-border);
+  background:var(--dark-mid);
+  flex-wrap:wrap;
+}
+
+/* modal fields */
+#ch-modal .f-input {
+  background:rgba(255,255,255,.05);
+  border-color:var(--gold-border);
+  color:#fff;
+}
+#ch-modal .f-input::placeholder { color:rgba(255,255,255,.22); }
+#ch-modal .f-input:focus         { border-color:var(--gold-dim); }
+#ch-modal .field label           { color:var(--gold-dim); }
+#ch-modal select.f-input option  { background:#1a1400; color:#fff; }
+
+/* drop zone */
+.drop-zone {
+  border:2px dashed var(--gold-border);
+  border-radius:var(--radius);
+  padding:1.5rem; text-align:center;
+  cursor:pointer;
+  transition:border-color .2s, background .2s;
+}
+.drop-zone:hover, .drop-zone.over {
+  border-color:var(--gold-dim);
+  background:rgba(201,168,76,.05);
+}
+.drop-zone input { display:none; }
+.drop-zone p {
+  font-family:var(--sans); font-size:.84rem;
+  color:var(--gold-dim); margin-top:.4rem; max-width:none;
+}
+.drop-zone p strong { color:var(--gold); cursor:pointer; }
+#file-lbl {
+  font-family:var(--sans); font-size:.78rem;
+  color:var(--gold); margin-top:.5rem; display:none;
+}
+.or-div {
+  display:flex; align-items:center; gap:1rem;
+  color:var(--gold-border); font-size:.75rem;
+  font-family:var(--sans); margin:1.25rem 0;
+}
+.or-div::before,.or-div::after {
+  content:''; flex:1; height:1px; background:var(--gold-border);
+}
+
+/* Quill overrides for dark background */
+.ql-toolbar.ql-snow {
+  border:1px solid var(--gold-border);
+  border-radius:3px 3px 0 0;
+  background: var(--dark-mid);
+}
+.ql-toolbar.ql-snow .ql-stroke { stroke:#c9a84c !important; }
+.ql-toolbar.ql-snow .ql-fill   { fill:#c9a84c !important; }
+.ql-toolbar.ql-snow button:hover .ql-stroke,
+.ql-toolbar.ql-snow .ql-active .ql-stroke { stroke:var(--gold-light) !important; }
+.ql-toolbar.ql-snow .ql-picker-label { color:var(--gold-dim); }
+.ql-toolbar.ql-snow .ql-picker-options {
+  background: var(--dark);
+  border-color: var(--gold-border);
+  color: var(--gold-dim);
+}
+.ql-container.ql-snow {
+  border:1px solid var(--gold-border);
+  border-top:none;
+  border-radius:0 0 3px 3px;
+  background:rgba(255,255,255,.03);
+  font-family:var(--serif);
+  font-size:1.05rem; line-height:1.8;
+  min-height:280px; max-height:400px;
+  overflow-y:auto;
+  color:#e8d8b8;
+}
+.ql-editor { padding:1.25rem 1.5rem; }
+.ql-editor p { margin-bottom:.8em; }
+.ql-editor.ql-blank::before { color:rgba(255,255,255,.2) !important; font-style:italic; }
+
+/* font classes */
+.ql-font-cormorant,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="cormorant"]::before
+  { font-family:'Cormorant Garamond',serif !important; }
+.ql-font-lora,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="lora"]::before
+  { font-family:'Lora',serif !important; }
+.ql-font-playfair,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="playfair"]::before
+  { font-family:'Playfair Display',serif !important; }
+.ql-font-sans,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="sans"]::before
+  { font-family:'DM Sans',sans-serif !important; }
+
+@media(max-width:600px) {
+  .stats-row { grid-template-columns:1fr; }
+  #ch-modal-body { padding:1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ DASH HEADER ══ -->
+<header id="dash-header">
+  <a href="index.html" class="dash-logo" id="dash-logo">My Novel</a>
+  <div class="dash-header-right">
+    <a href="index.html" target="_blank">View Site ↗</a>
+    <span class="dash-sep">|</span>
+    <button onclick="doLogout()">Sign Out</button>
+  </div>
+</header>
+
+<!-- ══ TABS ══ -->
+<div id="dash-tabs">
+  <button class="tab-btn active" data-panel="p-overview"  onclick="tab(this)">Overview</button>
+  <button class="tab-btn"        data-panel="p-chapters"  onclick="tab(this)">Chapters</button>
+  <button class="tab-btn"        data-panel="p-settings"  onclick="tab(this)">Settings</button>
+  <button class="tab-btn"        data-panel="p-readers"   onclick="tab(this)">Readers</button>
+  <button class="tab-btn"        data-panel="p-messages"  onclick="tab(this)" id="msg-tab">Messages</button>
+</div>
+
+<!-- ══ OVERVIEW ══ -->
+<div id="p-overview" class="panel active">
+  <div class="stats-row">
+    <div class="stat-card"><span class="stat-num" id="st-ch">—</span><span class="stat-label">Chapters Published</span></div>
+    <div class="stat-card"><span class="stat-num" id="st-rd">—</span><span class="stat-label">Subscribers</span></div>
+    <div class="stat-card"><span class="stat-num" id="st-ms">—</span><span class="stat-label">Messages</span></div>
+  </div>
+  <div class="dcard">
+    <div class="dcard-head"><h2>Quick Actions</h2></div>
+    <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
+      <button class="btn btn-gold"    onclick="goTab('p-chapters');openEditor(null)">+ Add Chapter</button>
+      <a      class="btn btn-dark"    href="index.html" target="_blank">Preview Site ↗</a>
+      <button class="btn btn-dark"    onclick="goTab('p-settings')">Settings</button>
+    </div>
+  </div>
+  <div class="dcard">
+    <div class="dcard-head">
+      <h2>Recent Chapters</h2>
+      <button class="btn btn-dark" style="font-size:.72rem;padding:.4rem .9rem;"
+              onclick="goTab('p-chapters')">View All →</button>
+    </div>
+    <div id="ov-recent">
+      <div class="loading-state"><span class="spinner"></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHAPTERS ══ -->
+<div id="p-chapters" class="panel">
+  <div class="dcard">
+    <div class="dcard-head">
+      <h2>All Chapters</h2>
+      <button class="btn btn-gold" onclick="openEditor(null)">+ Add Chapter</button>
+    </div>
+    <div id="dash-ch-list">
+      <div class="loading-state"><span class="spinner"></span></div>
+    </div>
+  </div>
+  <p style="font-family:var(--sans);font-size:.72rem;color:var(--gold-border);
+            text-align:center;margin-top:.5rem;">
+    Drag ⠿ to reorder · Changes save immediately
+  </p>
+</div>
+
+<!-- ══ SETTINGS ══ -->
+<div id="p-settings" class="panel">
+  <div class="dcard">
+    <div class="dcard-head">
+      <h2>Novel Details</h2>
+      <button class="btn btn-gold" onclick="saveSettings()">Save Changes</button>
+    </div>
+    <div id="settings-loading" class="loading-state"><span class="spinner"></span></div>
+    <div id="settings-form" style="display:none;">
+      <div class="field"><label>Novel Title</label>
+        <input class="f-input" id="s-title" placeholder="e.g. Stones of the Heart"></div>
+      <div class="field"><label>Genre / Category</label>
+        <input class="f-input" id="s-genre" placeholder="e.g. Young Adult Romance Fantasy"></div>
+      <div class="field"><label>Tagline</label>
+        <input class="f-input" id="s-tagline" placeholder="One sentence shown under your title"></div>
+      <div class="field"><label>Description
+        <span style="text-transform:none;font-size:.8em;letter-spacing:0;font-weight:300;">
+          (About page + search engines)
+        </span></label>
+        <textarea class="f-input" id="s-desc"
+                  placeholder="A few paragraphs about your story."></textarea></div>
+      <div class="field-row">
+        <div class="field"><label>Author Name / Pen Name</label>
+          <input class="f-input" id="s-author" placeholder="Your name"></div>
+        <div class="field"><label>Update Schedule</label>
+          <input class="f-input" id="s-schedule" placeholder="e.g. Every Saturday"></div>
+      </div>
+      <div class="field"><label>Author Bio
+        <span style="text-transform:none;font-size:.8em;letter-spacing:0;font-weight:300;">
+          (shown on About page)
+        </span></label>
+        <textarea class="f-input" id="s-authorbio"
+                  placeholder="A few sentences about yourself as a writer."></textarea></div>
+    </div>
+  </div>
+
+  <div class="dcard" id="access-card" style="display:none;">
+    <div class="dcard-head"><h2>Reader Access</h2></div>
+    <div class="toggle-row">
+      <div>
+        <div class="tl">Email gate for locked chapters</div>
+        <div class="th">Readers enter email to unlock chapters beyond the free ones.</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="s-gate">
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="toggle-row">
+      <div class="tl">Gate popup title</div>
+      <input class="f-input" id="s-gate-title" placeholder="Unlock All Chapters">
+    </div>
+    <div class="toggle-row">
+      <div class="tl">Gate popup message</div>
+      <input class="f-input" id="s-gate-msg"
+             placeholder="Join free — instant access + weekly updates.">
+    </div>
+  </div>
+
+  <div class="dcard" id="pw-card" style="display:none;">
+    <div class="dcard-head"><h2>Change Password</h2></div>
+    <div class="field-row">
+      <div class="field"><label>New Password</label>
+        <input class="f-input" type="password" id="s-pw" placeholder="Min 6 characters"></div>
+      <div class="field"><label>Confirm</label>
+        <input class="f-input" type="password" id="s-pw2" placeholder="Repeat new password"></div>
+    </div>
+    <button class="btn btn-dark" onclick="changePassword()">Update Password</button>
+  </div>
+</div>
+
+<!-- ══ READERS ══ -->
+<div id="p-readers" class="panel">
+  <div class="dcard">
+    <div class="dcard-head">
+      <h2>Subscribers</h2>
+      <button class="btn btn-dark" onclick="exportEmails()">Export CSV</button>
+    </div>
+    <p style="font-family:var(--sans);font-size:.82rem;color:var(--gold-dim);margin-bottom:1rem;">
+      Emails collected through the unlock gate and newsletter signup.
+    </p>
+    <div id="email-list" style="margin-bottom:1rem;"></div>
+    <p id="email-count" style="font-family:var(--sans);font-size:.76rem;color:var(--gold-dim);"></p>
+  </div>
+</div>
+
+<!-- ══ MESSAGES ══ -->
+<div id="p-messages" class="panel">
+  <div class="dcard">
+    <div class="dcard-head">
+      <h2>Contact Messages</h2>
+      <button class="btn btn-dark" onclick="clearMsgs()">Clear All</button>
+    </div>
+    <div id="messages-list">
+      <div class="loading-state"><span class="spinner"></span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHAPTER EDITOR MODAL ══ -->
+<div id="ch-modal">
+  <div id="ch-modal-box">
+    <div id="ch-modal-head">
+      <h3 id="ch-modal-title">Add Chapter</h3>
+      <button class="btn-ghost" style="color:var(--gold-dim);"
+              onclick="closeEditor()">✕ Close</button>
+    </div>
+    <div id="ch-modal-body">
+      <input type="hidden" id="ed-id">
+      <div class="field-row">
+        <div class="field">
+          <label>Chapter Number / Label</label>
+          <input class="f-input" id="ed-num" placeholder="e.g. One, 1, Prologue">
+        </div>
+        <div class="field">
+          <label>Access</label>
+          <select class="f-input" id="ed-status">
+            <option value="free">Free — anyone can read</option>
+            <option value="locked">Locked — email signup required</option>
+            <option value="draft">Draft — hidden from readers</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Chapter Title</label>
+        <input class="f-input" id="ed-title" placeholder="e.g. The Weight of Stone">
+      </div>
+      <div class="field">
+        <label>Teaser Line
+          <span style="text-transform:none;font-size:.8em;letter-spacing:0;font-weight:300;">
+            (shown in chapter list — optional)
+          </span>
+        </label>
+        <input class="f-input" id="ed-teaser"
+               placeholder="One line shown below the title in the chapter list">
+      </div>
+      <div class="field">
+        <label>Epigraph / Opening Quote
+          <span style="text-transform:none;font-size:.8em;letter-spacing:0;font-weight:300;">
+            (optional)
+          </span>
+        </label>
+        <input class="f-input" id="ed-epi"
+               placeholder="Displayed in italics before the chapter body">
+      </div>
+
+      <!-- file upload -->
+      <div class="field">
+        <label>Upload Chapter File
+          <span style="text-transform:none;font-size:.8em;letter-spacing:0;font-weight:300;">
+            (.txt or .docx — loads into the editor below)
+          </span>
+        </label>
+        <div class="drop-zone" id="drop-zone"
+             onclick="document.getElementById('ch-file').click()"
+             ondragover="dzOver(event)"
+             ondragleave="dzLeave(event)"
+             ondrop="dzDrop(event)">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none"
+               stroke="var(--gold-border)" stroke-width="1.5"
+               style="display:block;margin:0 auto .4rem;" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <input type="file" id="ch-file" accept=".txt,.md,.docx"
+                 onchange="handleFile(this.files[0])">
+          <p>Drop a <strong>.txt</strong> or <strong>.docx</strong>,
+             or <strong onclick="event.stopPropagation();
+                                 document.getElementById('ch-file').click()">
+               click to browse
+             </strong>
+          </p>
+        </div>
+        <div id="file-lbl"></div>
+      </div>
+
+      <div class="or-div">or write / paste directly in the editor</div>
+
+      <!-- rich text editor -->
+      <div class="field">
+        <label>Chapter Text</label>
+        <div id="quill-toolbar">
+          <span class="ql-formats">
+            <select class="ql-font">
+              <option value="cormorant" selected>Cormorant</option>
+              <option value="lora">Lora</option>
+              <option value="playfair">Playfair</option>
+              <option value="sans">Sans</option>
+            </select>
+          </span>
+          <span class="ql-formats">
+            <select class="ql-size">
+              <option value="small">Small</option>
+              <option selected>Normal</option>
+              <option value="large">Large</option>
+              <option value="huge">Huge</option>
+            </select>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-bold"></button>
+            <button class="ql-italic"></button>
+            <button class="ql-underline"></button>
+            <button class="ql-strike"></button>
+          </span>
+          <span class="ql-formats">
+            <select class="ql-color"></select>
+            <select class="ql-background"></select>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-header" value="1"></button>
+            <button class="ql-header" value="2"></button>
+            <button class="ql-blockquote"></button>
+          </span>
+          <span class="ql-formats">
+            <select class="ql-align"></select>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-list" value="ordered"></button>
+            <button class="ql-list" value="bullet"></button>
+          </span>
+          <span class="ql-formats">
+            <button class="ql-link"></button>
+            <button class="ql-clean"></button>
+          </span>
+        </div>
+        <div id="quill-editor"></div>
+        <div class="field-hint" style="margin-top:.5rem;">
+          All formatting — fonts, sizes, colours, bold, italic, alignment —
+          displays exactly the same for readers.
+        </div>
+      </div>
+    </div>
+    <div id="ch-modal-foot">
+      <button class="btn-ghost" style="color:var(--gold-dim);"
+              onclick="closeEditor()">Cancel</button>
+      <button class="btn btn-dark"  onclick="saveChapter('draft')">Save as Draft</button>
+      <button class="btn btn-gold"  id="pub-btn" onclick="saveChapter('publish')">Publish Chapter</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script src="config.js"></script>
+<script src="shared.js"></script>
+<script>
+/* ═══════════════════════════════════════
+   AUTH GUARD
+═══════════════════════════════════════ */
+const cachedPw = sessionStorage.getItem('novel_pw_cache');
+if (!cachedPw) window.location.href = 'login.html';
+
+/* ═══════════════════════════════════════
+   QUILL
+═══════════════════════════════════════ */
+const FontStyle = Quill.import('attributors/style/font');
+FontStyle.whitelist = ['cormorant','lora','playfair','sans'];
+Quill.register(FontStyle, true);
+const Font = Quill.import('formats/font');
+Font.whitelist = ['cormorant','lora','playfair','sans'];
+Quill.register(Font, true);
+const Size = Quill.import('attributors/style/size');
+Size.whitelist = ['small','large','huge'];
+Quill.register(Size, true);
+
+let quill = null;
+function initQuill() {
+  if (quill) return;
+  quill = new Quill('#quill-editor', {
+    theme: 'snow',
+    modules: { toolbar: '#quill-toolbar' },
+    placeholder: 'Your chapter begins here…'
+  });
+}
+
+/* ═══════════════════════════════════════
+   TABS
+═══════════════════════════════════════ */
+function tab(btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.panel).classList.add('active');
+}
+function goTab(id) {
+  const b = document.querySelector(`.tab-btn[data-panel="${id}"]`);
+  if (b) tab(b);
+}
+
+/* ═══════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════ */
+let cachedSettings = {};
+
+async function loadSettings() {
+  const rows = await sbFetch('settings?id=eq.1');
+  cachedSettings = rows?.[0] || {};
+  const s = cachedSettings;
+
+  /* update logo */
+  const t = s.title || 'My Novel';
+  document.getElementById('dash-logo').textContent = t;
+
+  /* fill form */
+  document.getElementById('s-title').value     = s.title       || '';
+  document.getElementById('s-genre').value     = s.genre       || '';
+  document.getElementById('s-tagline').value   = s.tagline     || '';
+  document.getElementById('s-desc').value      = s.description || '';
+  document.getElementById('s-author').value    = s.author_name || '';
+  document.getElementById('s-schedule').value  = s.schedule    || '';
+  document.getElementById('s-authorbio').value = s.author_bio  || '';
+  document.getElementById('s-gate').checked    = s.gate_enabled !== false;
+  document.getElementById('s-gate-title').value = s.gate_title || '';
+  document.getElementById('s-gate-msg').value   = s.gate_msg   || '';
+
+  document.getElementById('settings-loading').style.display = 'none';
+  document.getElementById('settings-form').style.display    = 'block';
+  document.getElementById('access-card').style.display      = 'block';
+  document.getElementById('pw-card').style.display          = 'block';
+}
+
+async function saveSettings() {
+  const btn = document.querySelector('#p-settings .btn-gold');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="border-top-color:var(--dark);"></span> Saving…';
+  try {
+    await sbFetch('settings?id=eq.1', {
+      method: 'PATCH',
+      prefer: 'return=minimal',
+      body: {
+        title:        document.getElementById('s-title').value.trim(),
+        genre:        document.getElementById('s-genre').value.trim(),
+        tagline:      document.getElementById('s-tagline').value.trim(),
+        description:  document.getElementById('s-desc').value.trim(),
+        author_name:  document.getElementById('s-author').value.trim(),
+        schedule:     document.getElementById('s-schedule').value.trim(),
+        author_bio:   document.getElementById('s-authorbio').value.trim(),
+        gate_enabled: document.getElementById('s-gate').checked,
+        gate_title:   document.getElementById('s-gate-title').value.trim(),
+        gate_msg:     document.getElementById('s-gate-msg').value.trim(),
+        updated_at:   new Date().toISOString()
+      }
+    });
+    await loadSettings();
+    toast('Settings saved ✓');
+  } catch(e) { toast('Save failed: ' + e.message); }
+  btn.disabled = false;
+  btn.textContent = 'Save Changes';
+}
+
+async function changePassword() {
+  const p1 = document.getElementById('s-pw').value;
+  const p2 = document.getElementById('s-pw2').value;
+  if (!p1 || p1.length < 6) return toast('Min 6 characters');
+  if (p1 !== p2)             return toast('Passwords do not match');
+  await sbFetch('settings?id=eq.1', {
+    method:'PATCH', prefer:'return=minimal',
+    body:{ password: p1 }
+  });
+  sessionStorage.setItem('novel_pw_cache', p1);
+  document.getElementById('s-pw').value  = '';
+  document.getElementById('s-pw2').value = '';
+  toast('Password updated ✓');
+}
+
+/* ═══════════════════════════════════════
+   CHAPTERS
+═══════════════════════════════════════ */
+let allChs = [];
+
+async function loadChapters() {
+  const chs = await sbFetch('chapters?order=chapter_order.asc');
+  allChs = chs || [];
+  renderDashChapters();
+  renderOverview();
+}
+
+function renderDashChapters() {
+  const el = document.getElementById('dash-ch-list');
+  if (!allChs.length) {
+    el.innerHTML = `<div style="padding:2rem;text-align:center;
+      font-family:var(--serif);font-style:italic;color:var(--gold-dim);">
+      No chapters yet. Click "Add Chapter" to get started.
+    </div>`;
+    return;
+  }
+  el.innerHTML = allChs.map(ch => `
+    <div class="dch-row" data-id="${ch.id}" draggable="true">
+      <div class="drag-h">⠿</div>
+      <div class="dch-info">
+        <div class="dch-title">
+          <span style="color:var(--gold-border);margin-right:.4rem;">
+            ${esc(ch.num || ch.chapter_order)}.
+          </span>
+          ${esc(ch.title || 'Untitled')}
+          <span class="tag ${ch.status==='free'?'tag-free':ch.status==='draft'?'tag-draft':'tag-locked'}"
+                style="margin-left:.5rem;font-size:.62rem;">
+            ${ch.status==='free'?'Free':ch.status==='draft'?'Draft':'Locked'}
+          </span>
+        </div>
+        <div class="dch-sub">${esc(ch.teaser || '—')}</div>
+      </div>
+      <div class="dch-acts">
+        <button class="ib" onclick="openEditor('${ch.id}')" title="Edit">✏️</button>
+        <button class="ib del" onclick="deleteChapter('${ch.id}')" title="Delete">🗑</button>
+      </div>
+    </div>`).join('');
+  initDrag();
+}
+
+function renderOverview() {
+  const pub   = allChs.filter(c => c.status !== 'draft');
+  document.getElementById('st-ch').textContent = pub.length;
+  const recent = [...allChs].slice(-4).reverse();
+  const el = document.getElementById('ov-recent');
+  if (!recent.length) {
+    el.innerHTML = `<p style="font-family:var(--serif);font-style:italic;
+      color:var(--gold-dim);font-size:.95rem;">No chapters yet.</p>`;
+    return;
+  }
+  el.innerHTML = recent.map(ch => `
+    <div style="display:flex;align-items:center;justify-content:space-between;
+                padding:.75rem 0;border-bottom:1px solid var(--gold-border);">
+      <div>
+        <span style="font-family:var(--serif);color:var(--gold-light);">
+          ${esc(ch.title)}
+        </span>
+        <span class="tag ${ch.status==='free'?'tag-free':ch.status==='draft'?'tag-draft':'tag-locked'}"
+              style="margin-left:.5rem;font-size:.62rem;">
+          ${ch.status==='free'?'Free':ch.status==='draft'?'Draft':'Locked'}
+        </span>
+      </div>
+      <button class="ib" onclick="openEditor('${ch.id}')">✏️</button>
+    </div>`).join('');
+}
+
+/* ── drag reorder ── */
+let dragSrc = null;
+function initDrag() {
+  document.querySelectorAll('.dch-row').forEach(row => {
+    row.addEventListener('dragstart', e => {
+      dragSrc = row;
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    row.addEventListener('dragover', e => {
+      e.preventDefault();
+      row.style.background = 'rgba(201,168,76,.06)';
+    });
+    row.addEventListener('dragleave', () => row.style.background = '');
+    row.addEventListener('drop', async e => {
+      e.preventDefault();
+      row.style.background = '';
+      if (dragSrc === row) return;
+      const ids = [...document.querySelectorAll('.dch-row')].map(r => r.dataset.id);
+      const from = ids.indexOf(dragSrc.dataset.id);
+      const to   = ids.indexOf(row.dataset.id);
+      ids.splice(to, 0, ids.splice(from, 1)[0]);
+      allChs.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+      renderDashChapters();
+      await Promise.all(ids.map((id, i) =>
+        sbFetch(`chapters?id=eq.${id}`, {
+          method:'PATCH', prefer:'return=minimal',
+          body:{ chapter_order: i + 1 }
+        })
+      ));
+    });
+    row.addEventListener('dragend', () => row.style.background = '');
+  });
+}
+
+/* ── editor ── */
+let editId = null;
+
+function openEditor(id) {
+  editId = id;
+  initQuill();
+  const ch = id ? allChs.find(c => c.id === id) : null;
+  document.getElementById('ch-modal-title').textContent = ch ? 'Edit Chapter' : 'Add Chapter';
+  document.getElementById('ed-id').value      = ch ? ch.id       : '';
+  document.getElementById('ed-num').value     = ch ? (ch.num||'')      : '';
+  document.getElementById('ed-title').value   = ch ? (ch.title||'')    : '';
+  document.getElementById('ed-status').value  = ch ? (ch.status||'free'): 'free';
+  document.getElementById('ed-teaser').value  = ch ? (ch.teaser||'')   : '';
+  document.getElementById('ed-epi').value     = ch ? (ch.epigraph||'') : '';
+  document.getElementById('file-lbl').style.display = 'none';
+  if (ch && ch.body) quill.clipboard.dangerouslyPasteHTML(0, ch.body);
+  else quill.setContents([]);
+  document.getElementById('ch-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeEditor() {
+  document.getElementById('ch-modal').classList.remove('open');
+  document.body.style.overflow = '';
+  editId = null;
+}
+
+async function saveChapter(mode) {
+  const title  = document.getElementById('ed-title').value.trim();
+  const body   = quill.root.innerHTML.trim();
+  if (!title) return toast('Please enter a chapter title');
+  if (!body || body === '<p><br></p>') return toast('Chapter text cannot be empty');
+
+  const status = mode === 'draft' ? 'draft' : document.getElementById('ed-status').value;
+  const btn = document.getElementById('pub-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="border-top-color:var(--dark);"></span> Saving…';
+
+  const payload = {
+    num:       document.getElementById('ed-num').value.trim(),
+    title,
+    teaser:    document.getElementById('ed-teaser').value.trim(),
+    epigraph:  document.getElementById('ed-epi').value.trim(),
+    body, status,
+    updated_at: new Date().toISOString()
+  };
+
+  try {
+    if (editId) {
+      await sbFetch(`chapters?id=eq.${editId}`, {
+        method:'PATCH', prefer:'return=minimal', body: payload
+      });
+    } else {
+      const maxOrder = allChs.reduce((m, c) => Math.max(m, c.chapter_order || 0), 0);
+      await sbFetch('chapters', {
+        method:'POST', prefer:'return=minimal',
+        body: { ...payload, chapter_order: maxOrder + 1 }
+      });
+    }
+    await loadChapters();
+    closeEditor();
+    toast(mode === 'draft' ? 'Saved as draft' : 'Chapter published ✓');
+  } catch(e) { toast('Save failed: ' + e.message); }
+
+  btn.disabled = false;
+  btn.textContent = 'Publish Chapter';
+}
+
+async function deleteChapter(id) {
+  if (!confirm('Delete this chapter? This cannot be undone.')) return;
+  await sbFetch(`chapters?id=eq.${id}`, { method:'DELETE', prefer:'return=minimal' });
+  await loadChapters();
+  toast('Chapter deleted');
+}
+
+/* ── file upload ── */
+function handleFile(f) {
+  if (!f) return;
+  const lbl = document.getElementById('file-lbl');
+  if (f.name.endsWith('.docx')) {
+    const r = new FileReader();
+    r.onload = e => {
+      mammoth.convertToHtml({ arrayBuffer: e.target.result })
+        .then(res => {
+          quill.clipboard.dangerouslyPasteHTML(0, res.value);
+          lbl.textContent = '✓ ' + f.name + ' loaded';
+          lbl.style.display = 'block';
+          autoTitle(f.name);
+        })
+        .catch(() => toast('Could not read .docx'));
+    };
+    r.readAsArrayBuffer(f);
+  } else {
+    const r = new FileReader();
+    r.onload = e => {
+      const html = e.target.result
+        .split(/\n\s*\n/)
+        .filter(p => p.trim())
+        .map(p => '<p>' + p.trim() + '</p>')
+        .join('');
+      quill.clipboard.dangerouslyPasteHTML(0, html);
+      lbl.textContent = '✓ ' + f.name + ' loaded';
+      lbl.style.display = 'block';
+      autoTitle(f.name);
+    };
+    r.readAsText(f);
+  }
+}
+
+function autoTitle(fname) {
+  if (!document.getElementById('ed-title').value) {
+    const n = fname.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ');
+    document.getElementById('ed-title').value =
+      n.charAt(0).toUpperCase() + n.slice(1);
+  }
+}
+
+function dzOver(e)  { e.preventDefault(); document.getElementById('drop-zone').classList.add('over'); }
+function dzLeave()  { document.getElementById('drop-zone').classList.remove('over'); }
+function dzDrop(e)  { e.preventDefault(); dzLeave(); handleFile(e.dataTransfer.files[0]); }
+
+/* ── readers ── */
+async function loadReaders() {
+  const rows = await sbFetch('readers?order=created_at.desc');
+  const el   = document.getElementById('email-list');
+  document.getElementById('st-rd').textContent = rows?.length || 0;
+  document.getElementById('email-count').textContent =
+    (rows?.length || 0) + ' subscriber' + ((rows?.length || 0) !== 1 ? 's' : '');
+  el.innerHTML = rows?.length
+    ? rows.map(r => `<span class="email-pill">${esc(r.email)}</span>`).join('')
+    : `<p style="font-family:var(--serif);font-style:italic;color:var(--gold-dim);">
+         No subscribers yet.
+       </p>`;
+}
+
+function exportEmails() {
+  const pills = [...document.querySelectorAll('.email-pill')].map(p => p.textContent);
+  if (!pills.length) return toast('No emails to export yet');
+  const b = new Blob([pills.join('\n')], { type:'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(b);
+  a.download = 'readers.csv';
+  a.click();
+}
+
+/* ── messages ── */
+async function loadMessages() {
+  const msgs = await sbFetch('messages?order=created_at.desc');
+  document.getElementById('st-ms').textContent = msgs?.length || 0;
+  if (msgs?.length)
+    document.getElementById('msg-tab').textContent = `Messages (${msgs.length})`;
+
+  const el = document.getElementById('messages-list');
+  if (!msgs?.length) {
+    el.innerHTML = `<p style="font-family:var(--serif);font-style:italic;
+      color:var(--gold-dim);">No messages yet.</p>`;
+    return;
+  }
+  el.innerHTML = msgs.map(m => `
+    <div class="msg-card">
+      <div class="msg-head">
+        <span class="msg-from">${esc(m.name)} &lt;${esc(m.email)}&gt;</span>
+        <span class="msg-date">${new Date(m.created_at).toLocaleDateString()}</span>
+      </div>
+      ${m.subject ? `<div class="msg-subj">${esc(m.subject)}</div>` : ''}
+      <div class="msg-body">${esc(m.body)}</div>
+      <button class="ib del" style="margin-top:.5rem;"
+              onclick="deleteMsg('${m.id}')">🗑 Delete</button>
+    </div>`).join('');
+}
+
+async function deleteMsg(id) {
+  if (!confirm('Delete this message?')) return;
+  await sbFetch(`messages?id=eq.${id}`, { method:'DELETE', prefer:'return=minimal' });
+  loadMessages();
+}
+
+async function clearMsgs() {
+  if (!confirm('Clear ALL messages? This cannot be undone.')) return;
+  const msgs = await sbFetch('messages');
+  await Promise.all((msgs||[]).map(m =>
+    sbFetch(`messages?id=eq.${m.id}`, { method:'DELETE', prefer:'return=minimal' })
+  ));
+  loadMessages();
+  toast('All messages cleared');
+}
+
+/* ── logout ── */
+function doLogout() {
+  sessionStorage.removeItem('novel_auth');
+  sessionStorage.removeItem('novel_pw_cache');
+  window.location.href = 'login.html';
+}
+
+/* ── keyboard ── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeEditor();
+});
+
+/* ── INIT ── */
+Promise.all([
+  loadSettings(),
+  loadChapters(),
+  loadReaders(),
+  loadMessages()
+]).catch(console.error);
+</script>
+</body>
+</html>
