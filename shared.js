@@ -1,8 +1,7 @@
 /* shared.js — runs on every reader-facing page */
-
-// ── CONFIG (set by db.js before this loads) ──────────────
-// window.SUPABASE_URL and window.SUPABASE_ANON_KEY are set in config.js
-
+/* shared.js */
+window.SUPABASE_URL      = 'https://jozxvmmsykuihnjmxuok.supabase.co';
+window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Impvenh2bW1zeWt1aWhuam14dW9rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2NTY3NzksImV4cCI6MjA5NTIzMjc3OX0.l23Anzx-XuR1GCgtOVTx5crBKyoT2nuWIvlIKRJccLE';
 // ── SUPABASE FETCH ───────────────────────────────────────
 async function sbFetch(path, opts = {}) {
   const base = window.SUPABASE_URL;
