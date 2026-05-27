@@ -19,10 +19,10 @@
   --bg:           #f5efe6;
   --bg-warm:      #ede5d8;
   --bg-deep:      #ddd0bc;
-  --text:         #2c1f0e;
-  --text-mid:     #5a3e22;
-  --text-soft:    #8a6e52;
-  --text-faint:   #c4aa8a;
+  --text:         #1a0f00;   /* darkened for contrast */
+  --text-mid:     #2c1f0e;   /* main reading text — solid */
+  --text-soft:    #5a3e22;   /* secondary text */
+  --text-faint:   #8a6e52;   /* muted labels */
   --border:       #ddd0bc;
   --card-bg:      #ffffff;
 
@@ -50,9 +50,9 @@ body.dark-mode {
   --bg:        #1a1400;
   --bg-warm:   #241c00;
   --bg-deep:   #3a2e00;
-  --text:      #e8d8b0;
-  --text-mid:  #c9a84c;
-  --text-soft: #a08040;
+  --text:      #f0e6cc;   /* bright warm white */
+  --text-mid:  #e8d8b0;   /* main reading text */
+  --text-soft: #c9a84c;   /* secondary */
   --text-faint:#6a5520;
   --border:    #3a2e00;
   --card-bg:   #241c00;
@@ -326,7 +326,7 @@ body.dark-mode #site-footer { background: var(--dark-mid); border-top-color: var
 .reader-ch-num { font-family: var(--sans); font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: var(--gold-dim); margin-bottom: .4rem; }
 .reader-ch-title { font-family: var(--serif); font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 600; color: var(--text); line-height: 1.2; margin-bottom: .6rem; }
 .reader-ch-epi { font-family: var(--serif); font-style: italic; color: var(--text-soft); font-size: 1rem; line-height: 1.65; padding-bottom: 2.5rem; margin-bottom: 2.5rem; border-bottom: 1px solid var(--border); }
-.reader-body { font-size: 1.1rem; line-height: 2; color: var(--text-mid); }
+.reader-body { font-size: 1.1rem; line-height: 2; color: var(--text); font-weight: 400; }
 .reader-body p { margin-bottom: 1.4em; max-width: none; }
 .reader-body p:first-child::first-letter { font-size: 3.4rem; float: left; line-height: .75; margin: .1em .08em 0 0; color: var(--gold); font-family: var(--serif); font-weight: 700; }
 .reader-body h1, .reader-body h2, .reader-body h3 { font-family: var(--serif); font-weight: 600; margin: 1.5em 0 .5em; max-width: none; }
