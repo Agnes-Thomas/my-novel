@@ -8,6 +8,16 @@
 <link rel="stylesheet" href="shared.css">
 <style>
 /* ── page-specific only ── */
+.book-hero-tagline {
+  font-family: var(--sans);
+  font-size: clamp(.85rem, 1.5vw, 1rem);
+  font-weight: 400;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin-bottom: 1rem;
+  max-width: none;
+}
 .hero-actions {
   display: flex;
   gap: .75rem;
@@ -46,6 +56,7 @@
 
 <!-- ══ BOOK HERO (dark — matches screenshot) ══ -->
 <section class="book-hero">
+  <p class="book-hero-tagline" id="hero-tagline-top"></p>
   <h1 class="book-hero-title" id="hero-title">My Novel</h1>
   <p class="book-hero-byline" id="hero-byline">by Author Name</p>
 
@@ -180,6 +191,7 @@
     document.getElementById('page-desc').setAttribute('content', s.description || s.tagline || '');
     document.getElementById('nav-logo').textContent    = title;
     document.getElementById('hero-title').textContent  = title;
+    if (s.tagline) document.getElementById('hero-tagline-top').textContent = s.tagline;
     document.getElementById('hero-byline').textContent = 'by ' + author;
 
     // Genre tag
