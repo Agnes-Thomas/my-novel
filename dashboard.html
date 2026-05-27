@@ -335,6 +335,32 @@ select.f-input option         { background:#1a1400; color:#fff; }
   .stats-row { grid-template-columns:1fr; }
   #ch-modal-body { padding:1.25rem; }
 }
+
+/* ── genre picker ── */
+.genre-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  font-family: var(--sans);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .35rem .85rem;
+  border-radius: 20px;
+  border: 1px solid var(--gold-border);
+  color: var(--gold-dim);
+  cursor: pointer;
+  transition: all .15s;
+  user-select: none;
+  background: transparent;
+}
+.genre-chip:hover { border-color: var(--gold-dim); color: var(--gold); }
+.genre-chip.selected {
+  background: var(--gold);
+  color: var(--dark);
+  border-color: var(--gold);
+  font-weight: 500;
+}
 </style>
 </head>
 <body>
@@ -412,9 +438,12 @@ select.f-input option         { background:#1a1400; color:#fff; }
     <div id="settings-loading" class="loading-state"><span class="spinner"></span></div>
     <div id="settings-form" style="display:none;">
       <div class="field"><label>Novel Title</label>
-        <input class="f-input" id="s-title"></div>
-      <div class="field"><label>Genre / Category</label>
-        <input class="f-input" id="s-genre" placeholder="e.g. Young Adult Romance Fantasy"></div>
+        <input class="f-input" id="s-title" placeholder="e.g. Stones of the Heart"></div>
+      <div class="field">
+        <label>Genres <span style="text-transform:none;font-size:.8em;letter-spacing:0;font-weight:300;">(select all that apply)</span></label>
+        <div id="genre-picker" style="display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.35rem;"></div>
+        <input type="hidden" id="s-genre">
+      </div>
       <div class="field"><label>Tagline</label>
         <input class="f-input" id="s-tagline" placeholder="One sentence shown under your title"></div>
       <div class="field"><label>Description
@@ -527,7 +556,7 @@ select.f-input option         { background:#1a1400; color:#fff; }
       </div>
       <div class="field">
         <label>Chapter Title</label>
-        <input class="f-input" id="ed-title">
+        <input class="f-input" id="ed-title" placeholder="e.g. The Weight of Stone">
       </div>
       <div class="field">
         <label>Teaser Line
@@ -649,6 +678,48 @@ select.f-input option         { background:#1a1400; color:#fff; }
 <script src="config.js"></script>
 <script src="shared.js"></script>
 <script>
+
+/* ═══════════════════════════════════════
+   GENRE PICKER
+═══════════════════════════════════════ */
+const GENRES = [
+  'Romance','Fantasy','Young Adult','Science Fiction',
+  'Thriller','Mystery','Horror','Historical Fiction',
+  'Contemporary','Literary Fiction','Adventure',
+  'Paranormal','Dystopian','Drama','Comedy',
+  'Action','Slice of Life','Dark Fiction','Isekai','Supernatural'
+];
+
+let selectedGenres = [];
+
+function renderGenrePicker() {
+  const el = document.getElementById('genre-picker');
+  if (!el) return;
+  el.innerHTML = GENRES.map(g => `
+    <button type="button"
+            class="genre-chip ${selectedGenres.includes(g) ? 'selected' : ''}"
+            onclick="toggleGenre(this, '${g}')">
+      ${g}
+    </button>`).join('');
+}
+
+function toggleGenre(btn, genre) {
+  if (selectedGenres.includes(genre)) {
+    selectedGenres = selectedGenres.filter(g => g !== genre);
+    btn.classList.remove('selected');
+  } else {
+    selectedGenres.push(genre);
+    btn.classList.add('selected');
+  }
+  document.getElementById('s-genre').value = selectedGenres.join(', ');
+}
+
+function setGenresFromString(str) {
+  selectedGenres = str ? str.split(',').map(g => g.trim()).filter(Boolean) : [];
+  document.getElementById('s-genre').value = selectedGenres.join(', ');
+  renderGenrePicker();
+}
+
 /* ═══════════════════════════════════════
    AUTH GUARD
 ═══════════════════════════════════════ */
@@ -708,7 +779,7 @@ async function loadSettings() {
 
   /* fill form */
   document.getElementById('s-title').value     = s.title       || '';
-  document.getElementById('s-genre').value     = s.genre       || '';
+  setGenresFromString(s.genre || '');
   document.getElementById('s-tagline').value   = s.tagline     || '';
   document.getElementById('s-desc').value      = s.description || '';
   document.getElementById('s-author').value    = s.author_name || '';
@@ -718,6 +789,7 @@ async function loadSettings() {
   document.getElementById('s-gate-title').value = s.gate_title || '';
   document.getElementById('s-gate-msg').value   = s.gate_msg   || '';
 
+  renderGenrePicker();
   document.getElementById('settings-loading').style.display = 'none';
   document.getElementById('settings-form').style.display    = 'block';
   document.getElementById('access-card').style.display      = 'block';
