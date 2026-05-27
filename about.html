@@ -129,49 +129,6 @@
   line-height: 1.6;
 }
 
-/* ── FAQ ── */
-.faq-list { margin-top: 0; }
-.faq-item {
-  border-bottom: 1px solid var(--cream-deep);
-}
-.faq-item:first-child { border-top: 1px solid var(--cream-deep); }
-.faq-q {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.1rem 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-family: var(--serif);
-  font-size: 1rem;
-  font-weight: 500;
-  text-align: left;
-  color: var(--ink);
-  transition: color .2s;
-}
-.faq-q:hover { color: var(--gold); }
-.faq-icon {
-  font-size: 1.2rem;
-  font-weight: 300;
-  color: var(--gold-dim);
-  flex-shrink: 0;
-  transition: transform .25s;
-  line-height: 1;
-}
-.faq-item.open .faq-icon { transform: rotate(45deg); }
-.faq-a {
-  display: none;
-  font-family: var(--serif);
-  font-size: .95rem;
-  color: var(--ink-soft);
-  line-height: 1.8;
-  padding-bottom: 1.1rem;
-}
-.faq-item.open .faq-a { display: block; }
-
 @media (max-width: 768px) {
   .about-body { grid-template-columns: 1fr; gap: 2.5rem; }
 }
@@ -228,73 +185,6 @@
           <a href="chapters.html" class="btn btn-gold">Start Reading →</a>
         </div>
       </div>
-
-      <!-- FAQ -->
-      <div class="about-block">
-        <h2>Frequently Asked Questions</h2>
-        <div class="faq-list">
-
-          <div class="faq-item">
-            <button class="faq-q" onclick="faq(this)">
-              What is this novel about?
-              <span class="faq-icon">+</span>
-            </button>
-            <div class="faq-a" id="faq-about">
-              Set your novel description in the Author Dashboard
-              and it will appear here.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <button class="faq-q" onclick="faq(this)">
-              How do I read it?
-              <span class="faq-icon">+</span>
-            </button>
-            <div class="faq-a">
-              The first few chapters are completely free —
-              no account required. To unlock all chapters and
-              receive new episodes in your inbox, join the reader
-              list. It's free.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <button class="faq-q" onclick="faq(this)">
-              How often are new chapters published?
-              <span class="faq-icon">+</span>
-            </button>
-            <div class="faq-a" id="faq-schedule">
-              New chapters are published on a regular schedule.
-              Join the reader list to be notified the moment
-              each new episode goes live.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <button class="faq-q" onclick="faq(this)">
-              Will the full novel be available?
-              <span class="faq-icon">+</span>
-            </button>
-            <div class="faq-a">
-              Yes. This is a complete story being published
-              chapter by chapter. Every episode is written
-              with the full arc already in mind.
-            </div>
-          </div>
-
-          <div class="faq-item">
-            <button class="faq-q" onclick="faq(this)">
-              Is it free to read?
-              <span class="faq-icon">+</span>
-            </button>
-            <div class="faq-a">
-              The first chapters are completely free. To unlock
-              all episodes, simply join the reader list with your
-              email address — no payment needed, ever.
-            </div>
-          </div>
-
-        </div>
       </div>
     </div>
 
@@ -375,18 +265,6 @@
 <script src="config.js"></script>
 <script src="shared.js"></script>
 <script>
-/* ── FAQ accordion ── */
-function faq(btn) {
-  const item   = btn.parentElement;
-  const isOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-  if (!isOpen) item.classList.add('open');
-}
-document.querySelectorAll('.faq-q').forEach(q => {
-  q.addEventListener('keydown', e => {
-    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); faq(q); }
-  });
-});
 
 /* ── load ── */
 (async () => {
