@@ -10,7 +10,7 @@
 :root {
   --dark:         #1a1400;
   --dark-mid:     #241c00;
-  --gold:         #c9a84c;
+  --gold:         #ffbf00;
   --gold-light:   #e2c97e;
   --gold-dim:     #8a6f2e;
   --gold-border:  #3a2e00;
@@ -50,9 +50,9 @@ body.dark-mode {
   --bg:        #1a1400;
   --bg-warm:   #241c00;
   --bg-deep:   #3a2e00;
-  --text:      #c9a84c;   /* bright warm white */
-  --text-mid:  #c9a84c;   /* main reading text */
-  --text-soft: #c9a84c;   /* secondary */
+  --text:      #ffbf00;   /* bright warm white */
+  --text-mid:  #ffbf00;   /* main reading text */
+  --text-soft: #ffbf00;   /* secondary */
   --text-faint:#6a5520;
   --border:    #3a2e00;
   --card-bg:   #241c00;
@@ -358,3 +358,27 @@ body.dark-mode #site-footer { background: var(--dark-mid); border-top-color: var
   .header-top { padding: 0 1.25rem; }
   .toc-section, .copyright-card { padding-left: 1.25rem; padding-right: 1.25rem; }
 }
+
+/* ══════════════════════════════════════════
+   POV LABEL — reader display
+══════════════════════════════════════════ */
+.reader-body .pov-label,
+.reader-body p[style*="color: rgb(201, 168, 76)"],
+.reader-body p[style*="color: #c9a84c"],
+.reader-body p[style*="color:rgb(201"],
+.reader-body span[style*="color: rgb(201, 168, 76)"] {
+  display: block;
+  font-style: italic !important;
+  font-family: var(--serif) !important;
+  font-size: 1rem !important;
+  color: var(--gold) !important;
+  letter-spacing: .06em;
+  margin: 1.5em 0 1em !important;
+  padding: .4em 0;
+  border-top: 1px solid rgba(201,168,76,.25);
+  border-bottom: 1px solid rgba(201,168,76,.25);
+  font-weight: 400 !important;
+}
+/* prevent drop cap on paragraphs immediately after a POV label */
+.reader-body p + p::first-letter { font-size: inherit; float: none; margin: 0; color: inherit; }
+.reader-body p:first-child::first-letter { font-size: 3.4rem; float: left; line-height: .75; margin: .1em .08em 0 0; color: var(--gold); font-family: var(--serif); font-weight: 700; }
