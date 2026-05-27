@@ -231,7 +231,7 @@ input:checked + .slider::before { transform: translateX(18px); }
 /* ══════════════════════════════════════════
    SITE HEADER
 ══════════════════════════════════════════ */
-#site-header { background: var(--dark); border-bottom: 1px solid var(--gold-dim); }
+#site-header { background: var(--dark); border-bottom: 1px solid var(--gold-dim); position: sticky; top: 0; z-index: 100; }
 .header-top { max-width: var(--max); margin: 0 auto; padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 58px; border-bottom: 1px solid var(--gold-border); }
 .site-logo { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; color: var(--gold); text-decoration: none; letter-spacing: .03em; flex-shrink: 0; }
 .site-logo:hover { color: var(--gold-light); }
