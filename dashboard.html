@@ -373,6 +373,60 @@ select.f-input option         { background:#1a1400; color:#fff; }
   border-color: var(--gold);
   font-weight: 500;
 }
+
+/* ── POV label ── */
+.pov-insert-bar {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: .75rem;
+  flex-wrap: wrap;
+}
+.pov-name-input {
+  flex: 1;
+  min-width: 160px;
+  max-width: 260px;
+  padding: .45rem .8rem;
+  border: 1px solid var(--gold-border);
+  border-radius: 3px;
+  background: rgba(255,255,255,.05);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: .88rem;
+  outline: none;
+  transition: border-color .2s;
+}
+.pov-name-input::placeholder { color: rgba(255,255,255,.25); }
+.pov-name-input:focus { border-color: var(--gold-dim); }
+.pov-insert-btn {
+  padding: .45rem 1rem;
+  background: rgba(201,168,76,.12);
+  border: 1px solid var(--gold-dim);
+  border-radius: 3px;
+  color: var(--gold);
+  font-family: var(--sans);
+  font-size: .76rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s;
+  white-space: nowrap;
+}
+.pov-insert-btn:hover { background: rgba(201,168,76,.22); }
+/* How POV looks inside Quill editor */
+.ql-editor .pov-label {
+  display: block;
+  font-style: italic;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: var(--gold-dim);
+  letter-spacing: .06em;
+  margin: 1.2em 0 .8em;
+  padding: .4em 0;
+  border-top: 1px solid rgba(201,168,76,.2);
+  border-bottom: 1px solid rgba(201,168,76,.2);
+  user-select: none;
+}
 </style>
 </head>
 <body>
@@ -625,6 +679,15 @@ select.f-input option         { background:#1a1400; color:#fff; }
       <!-- rich text editor -->
       <div class="field">
         <label>Chapter Text</label>
+        <!-- POV insert bar -->
+        <div class="pov-insert-bar">
+          <input class="pov-name-input" id="pov-name-input"
+                 placeholder="Character name (e.g. Anya)"
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();insertPOV();}">
+          <button class="pov-insert-btn" onclick="insertPOV()">
+            + Insert POV Label
+          </button>
+        </div>
         <div id="quill-toolbar">
           <span class="ql-formats">
             <select class="ql-font">
@@ -737,6 +800,49 @@ function setGenresFromString(str) {
   selectedGenres = str ? str.split(',').map(g => g.trim()).filter(Boolean) : [];
   document.getElementById('s-genre').value = selectedGenres.join(', ');
   renderGenrePicker();
+}
+
+
+/* ═══════════════════════════════════════
+   POV LABEL INSERTION
+═══════════════════════════════════════ */
+function insertPOV() {
+  const nameEl = document.getElementById('pov-name-input');
+  const name   = nameEl.value.trim();
+  if (!name) {
+    nameEl.style.borderColor = 'var(--gold)';
+    nameEl.focus();
+    setTimeout(() => nameEl.style.borderColor = '', 1200);
+    return;
+  }
+
+  // Get cursor position — insert at cursor, or at end if no selection
+  const range  = quill.getSelection(true);
+  const index  = range ? range.index : quill.getLength();
+
+  // Insert a newline before if not at start
+  if (index > 0) {
+    quill.insertText(index, '\n', Quill.sources.USER);
+  }
+
+  // Insert the POV label as styled text
+  const label  = '— ' + name + ' —';
+  const ins    = index > 0 ? index + 1 : 0;
+  quill.insertText(ins, label, {
+    italic: true,
+    color:  '#c9a84c',
+    bold:   false
+  }, Quill.sources.USER);
+
+  // Insert newline after
+  quill.insertText(ins + label.length, '\n', Quill.sources.USER);
+
+  // Move cursor to after the label
+  quill.setSelection(ins + label.length + 1, 0, Quill.sources.SILENT);
+
+  // Clear the input
+  nameEl.value = '';
+  nameEl.focus();
 }
 
 /* ═══════════════════════════════════════
