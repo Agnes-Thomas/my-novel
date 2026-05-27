@@ -101,7 +101,7 @@
       <div class="copyright-icon">©</div>
       <p class="copyright-eyebrow">Copyright Notice</p>
       <h3 class="copyright-title"  id="copy-title">My Novel</h3>
-      <p class="copyright-owner"   id="copy-owner">Copyright © 2025 Author Name. All rights reserved.</p>
+      <p class="copyright-owner"   id="copy-owner">Copyright © 2026 Author Name. All rights reserved.</p>
       <hr class="copyright-rule">
       <p class="copyright-text">
         This work is the original creative work of <span id="copy-author">the author</span>.
@@ -194,9 +194,10 @@
     if (s.tagline) document.getElementById('hero-tagline-top').textContent = s.tagline;
     document.getElementById('hero-byline').textContent = 'by ' + author;
 
-    // Genre tag
+    // Genre tags — support multiple genres separated by comma
+    const genres = (s.genre || 'Fiction').split(',').map(g => g.trim()).filter(Boolean);
     document.getElementById('hero-tags').innerHTML =
-      `<span class="tag tag-genre-dark">${genre}</span>`;
+      genres.map(g => `<span class="tag tag-genre-dark">${esc(g)}</span>`).join('');
 
     // Gate text
     const gh = document.getElementById('gate-heading');
