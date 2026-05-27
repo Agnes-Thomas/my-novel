@@ -318,18 +318,30 @@ select.f-input option         { background:#1a1400; color:#fff; }
 .ql-editor.ql-blank::before { color:rgba(255,255,255,.2) !important; font-style:italic; }
 
 /* font classes */
-.ql-font-cormorant,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="cormorant"]::before
-  { font-family:'Cormorant Garamond',serif !important; }
 .ql-font-lora,
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="lora"]::before
-  { font-family:'Lora',serif !important; }
+  { font-family:'Lora',serif !important; content:'Lora (Serif)' !important; }
 .ql-font-playfair,
 .ql-snow .ql-picker.ql-font .ql-picker-item[data-value="playfair"]::before
-  { font-family:'Playfair Display',serif !important; }
-.ql-font-sans,
-.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="sans"]::before
-  { font-family:'DM Sans',sans-serif !important; }
+  { font-family:'Playfair Display',serif !important; content:'Playfair Display' !important; }
+.ql-font-georgia,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="georgia"]::before
+  { font-family:Georgia,serif !important; content:'Georgia' !important; }
+.ql-font-garamond,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="garamond"]::before
+  { font-family:'EB Garamond',Garamond,serif !important; content:'Garamond' !important; }
+.ql-font-courier,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="courier"]::before
+  { font-family:'Courier New',Courier,monospace !important; content:'Courier' !important; }
+.ql-font-arial,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="arial"]::before
+  { font-family:Arial,Helvetica,sans-serif !important; content:'Arial' !important; }
+.ql-font-verdana,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value="verdana"]::before
+  { font-family:Verdana,Geneva,sans-serif !important; content:'Verdana' !important; }
+/* px size labels */
+.ql-snow .ql-picker.ql-size .ql-picker-label::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item::before { content: attr(data-value) !important; }
 
 @media(max-width:600px) {
   .stats-row { grid-template-columns:1fr; }
@@ -616,18 +628,25 @@ select.f-input option         { background:#1a1400; color:#fff; }
         <div id="quill-toolbar">
           <span class="ql-formats">
             <select class="ql-font">
-              <option value="cormorant" selected>Cormorant</option>
-              <option value="lora">Lora</option>
-              <option value="playfair">Playfair</option>
-              <option value="sans">Sans</option>
+              <option value="lora" selected>Lora (Serif)</option>
+              <option value="playfair">Playfair Display</option>
+              <option value="georgia">Georgia</option>
+              <option value="garamond">Garamond</option>
+              <option value="courier">Courier</option>
+              <option value="arial">Arial</option>
+              <option value="verdana">Verdana</option>
             </select>
           </span>
           <span class="ql-formats">
             <select class="ql-size">
-              <option value="small">Small</option>
-              <option selected>Normal</option>
-              <option value="large">Large</option>
-              <option value="huge">Huge</option>
+              <option value="12px">12px</option>
+              <option value="14px">14px</option>
+              <option value="16px" selected>16px</option>
+              <option value="18px">18px</option>
+              <option value="20px">20px</option>
+              <option value="24px">24px</option>
+              <option value="28px">28px</option>
+              <option value="32px">32px</option>
             </select>
           </span>
           <span class="ql-formats">
@@ -730,13 +749,13 @@ if (!cachedPw) window.location.href = 'login.html';
    QUILL
 ═══════════════════════════════════════ */
 const FontStyle = Quill.import('attributors/style/font');
-FontStyle.whitelist = ['cormorant','lora','playfair','sans'];
+FontStyle.whitelist = ['lora','playfair','georgia','garamond','courier','arial','verdana'];
 Quill.register(FontStyle, true);
 const Font = Quill.import('formats/font');
-Font.whitelist = ['cormorant','lora','playfair','sans'];
+Font.whitelist = ['lora','playfair','georgia','garamond','courier','arial','verdana'];
 Quill.register(Font, true);
 const Size = Quill.import('attributors/style/size');
-Size.whitelist = ['small','large','huge'];
+Size.whitelist = ['12px','14px','16px','18px','20px','24px','28px','32px'];
 Quill.register(Size, true);
 
 let quill = null;
