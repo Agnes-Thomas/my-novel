@@ -7,7 +7,6 @@
 <meta name="description" id="page-desc" content="">
 <link rel="stylesheet" href="shared.css">
 <style>
-/* ── page hero ── */
 .about-hero {
   background: var(--dark);
   border-bottom: 2px solid var(--gold-dim);
@@ -24,12 +23,10 @@
 .about-hero p {
   font-family: var(--serif);
   font-style: italic;
-  color: var(--ink-faint);
+  color: var(--text-faint);
   font-size: 1.05rem;
   max-width: none;
 }
-
-/* ── two-col layout ── */
 .about-body {
   max-width: var(--max);
   margin: 0 auto;
@@ -39,8 +36,6 @@
   gap: 4rem;
   align-items: start;
 }
-
-/* ── novel section ── */
 .about-block { margin-bottom: 3rem; }
 .about-block h2 {
   font-family: var(--serif);
@@ -49,17 +44,15 @@
   color: var(--gold);
   margin-bottom: 1rem;
   padding-bottom: .6rem;
-  border-bottom: 1px solid var(--cream-deep);
+  border-bottom: 1px solid var(--border);
 }
 .about-block p {
   font-family: var(--serif);
   font-size: 1.05rem;
   line-height: 1.85;
-  color: var(--ink-mid);
+  color: var(--text-mid);
   margin-bottom: 1.1em;
 }
-
-/* ── author card ── */
 .author-card {
   background: var(--dark);
   border: 1px solid var(--gold-border);
@@ -100,14 +93,12 @@
   font-family: var(--serif);
   font-size: 1rem;
   line-height: 1.8;
-  color: var(--ink-faint);
+  color: var(--text-faint);
   max-width: none;
 }
-
-/* ── subscribe card ── */
 .subscribe-card {
-  background: var(--cream-warm);
-  border: 1px solid var(--cream-deep);
+  background: var(--bg-warm);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 2rem;
   text-align: center;
@@ -122,13 +113,12 @@
 .subscribe-card p {
   font-family: var(--serif);
   font-style: italic;
-  color: var(--ink-soft);
+  color: var(--text-soft);
   font-size: .95rem;
   margin-bottom: 1.25rem;
   max-width: none;
   line-height: 1.6;
 }
-
 @media (max-width: 768px) {
   .about-body { grid-template-columns: 1fr; gap: 2.5rem; }
 }
@@ -136,7 +126,6 @@
 </head>
 <body>
 
-<!-- ══ HEADER ══ -->
 <header id="site-header">
   <div class="header-top">
     <a href="index.html" class="site-logo" id="nav-logo">My Novel</a>
@@ -161,19 +150,16 @@
   </nav>
 </header>
 
-<!-- ══ DARK HERO ══ -->
 <section class="about-hero">
   <h1 id="about-h1">About</h1>
   <p  id="about-sub">The story and the person behind it.</p>
 </section>
 
-<!-- ══ BODY ══ -->
 <main>
   <div class="about-body">
 
-    <!-- LEFT: novel description + FAQ -->
+    <!-- LEFT: novel description only -->
     <div>
-      <!-- Novel description -->
       <div class="about-block">
         <h2 id="novel-h2">The Novel</h2>
         <div id="novel-desc">
@@ -185,12 +171,10 @@
           <a href="chapters.html" class="btn btn-gold">Start Reading →</a>
         </div>
       </div>
-      </div>
     </div>
 
     <!-- RIGHT: author card + subscribe -->
     <div>
-      <!-- Author card -->
       <span class="eyebrow">The Author</span>
       <div class="author-card" id="author-card">
         <div class="loading-state" style="padding:1rem 0;">
@@ -198,7 +182,6 @@
         </div>
       </div>
 
-      <!-- Subscribe nudge -->
       <div class="subscribe-card">
         <span class="eyebrow">Stay Updated</span>
         <h3>Get Each Chapter First</h3>
@@ -214,7 +197,6 @@
   </div>
 </main>
 
-<!-- ══ FOOTER ══ -->
 <footer id="site-footer">
   <p class="footer-title"  id="footer-title">My Novel</p>
   <p class="footer-copy"   id="footer-copy">© 2025 · All rights reserved.</p>
@@ -222,7 +204,6 @@
   <p class="footer-author-link"><a href="login.html">✒ Author Login</a></p>
 </footer>
 
-<!-- ══ GATE ══ -->
 <div id="gate-overlay">
   <div id="gate-box">
     <button class="gate-x" onclick="closeGate()">×</button>
@@ -237,7 +218,7 @@
         Unlock &amp; Subscribe
       </button>
       <p style="font-family:var(--sans);font-size:.72rem;
-                color:var(--ink-faint);margin-top:.6rem;max-width:none;">
+                color:var(--text-faint);margin-top:.6rem;max-width:none;">
         No spam. Unsubscribe anytime.
       </p>
     </div>
@@ -262,15 +243,11 @@
 
 <div id="toast"></div>
 
-<script src="config.js"></script>
 <script src="shared.js"></script>
 <script>
-
-/* ── load ── */
 (async () => {
   try {
     const s = await getSettings();
-
     const title  = s.title       || 'My Novel';
     const author = s.author_name || 'Author Name';
     const year   = new Date().getFullYear();
@@ -284,38 +261,27 @@
     document.getElementById('footer-copy').textContent  =
       '© ' + year + ' ' + author + ' · All rights reserved.';
 
-    /* gate text */
     const gh = document.getElementById('gate-heading');
     const gs = document.getElementById('gate-subtext');
     if (s.gate_title) gh.textContent = s.gate_title;
     if (s.gate_msg)   gs.textContent = s.gate_msg;
 
-    /* novel description */
     if (s.description) {
       document.getElementById('novel-desc').innerHTML =
         s.description
           .split(/\n\n+/)
           .map(p => `<p>${esc(p.trim())}</p>`)
           .join('');
-      document.getElementById('faq-about').textContent = s.description;
     } else {
       document.getElementById('novel-desc').innerHTML =
-        `<p style="color:var(--ink-soft);font-style:italic;">
+        `<p style="color:var(--text-soft);font-style:italic;">
            Set your novel description in the Author Dashboard.
          </p>`;
     }
 
-    /* schedule FAQ answer */
-    if (s.schedule) {
-      document.getElementById('faq-schedule').textContent =
-        'New chapters are published ' + s.schedule.toLowerCase() +
-        '. Join the reader list to get notified the moment each one goes live.';
-    }
-
-    /* author card */
-    const initial  = author.charAt(0).toUpperCase();
-    const bioText  = s.author_bio ||
-      'Set your author bio in Dashboard → Settings. It will appear here.';
+    const initial = author.charAt(0).toUpperCase();
+    const bioText = s.author_bio ||
+      'Set your author bio in Dashboard → Settings.';
     document.getElementById('author-card').innerHTML = `
       <div class="author-avatar">${esc(initial)}</div>
       <div class="author-name">${esc(author)}</div>
@@ -325,30 +291,20 @@
   } catch (e) {
     console.error(e);
     document.getElementById('novel-desc').innerHTML =
-      `<p style="color:var(--ink-soft);">
-         Could not load settings. Check your config.js.
-       </p>`;
-    document.getElementById('author-card').innerHTML =
-      `<p style="color:var(--gold-dim);font-family:var(--sans);font-size:.85rem;">
-         Could not load author info.
-       </p>`;
+      `<p style="color:var(--text-soft);">Could not load. Check config.</p>`;
   }
 })();
 
-/* ── hamburger ── */
 document.getElementById('hamburger-btn').addEventListener('click', () => {
   const m = document.getElementById('mobile-nav');
   m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
 });
-
-/* ── gate ── */
 document.getElementById('gate-overlay')
   .addEventListener('click', e => {
     if (e.target === document.getElementById('gate-overlay')) closeGate();
   });
 document.getElementById('gate-email')
   .addEventListener('keydown', e => { if (e.key === 'Enter') submitGate(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGate(); });
 </script>
 </body>
 </html>
