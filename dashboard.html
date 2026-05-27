@@ -427,6 +427,69 @@ select.f-input option         { background:#1a1400; color:#fff; }
   border-bottom: 1px solid rgba(201,168,76,.2);
   user-select: none;
 }
+
+/* ── message reply ── */
+.msg-actions { display:flex; gap:.5rem; margin-top:.75rem; flex-wrap:wrap; }
+.msg-reply-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .35rem .9rem;
+  background: rgba(201,168,76,.1);
+  border: 1px solid var(--gold-dim);
+  border-radius: 3px;
+  color: var(--gold);
+  font-family: var(--sans);
+  font-size: .74rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s;
+}
+.msg-reply-btn:hover { background: rgba(201,168,76,.22); }
+.msg-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .35rem .9rem;
+  background: transparent;
+  border: 1px solid var(--gold-border);
+  border-radius: 3px;
+  color: var(--gold-dim);
+  font-family: var(--sans);
+  font-size: .74rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .2s;
+}
+.msg-expand-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+/* expanded message body */
+.msg-body-full {
+  display: none;
+  font-family: var(--serif);
+  font-size: .95rem;
+  color: rgba(255,255,255,.7);
+  line-height: 1.75;
+  margin-top: .75rem;
+  padding: .75rem 1rem;
+  background: rgba(255,255,255,.03);
+  border-left: 2px solid var(--gold-dim);
+  border-radius: 0 3px 3px 0;
+  white-space: pre-wrap;
+}
+.msg-body-full.open { display: block; }
+.msg-body-preview {
+  font-family: var(--serif);
+  font-size: .92rem;
+  color: rgba(255,255,255,.45);
+  line-height: 1.6;
+  margin-top: .35rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
 </style>
 </head>
 <body>
@@ -1228,17 +1291,44 @@ async function loadMessages() {
       color:var(--gold-dim);">No messages yet.</p>`;
     return;
   }
-  el.innerHTML = msgs.map(m => `
-    <div class="msg-card">
+  el.innerHTML = msgs.map(m => {
+    const preview = (m.body || '').slice(0, 120) + ((m.body||'').length > 120 ? '…' : '');
+    const replySubject = encodeURIComponent('Re: ' + (m.subject || 'Your message'));
+    const replyBody    = encodeURIComponent(
+      '\n\n---\nOn ' + new Date(m.created_at).toLocaleDateString() +
+      ', ' + (m.name||'') + ' wrote:\n' + (m.body||'')
+    );
+    const mailto = `mailto:${m.email}?subject=${replySubject}&body=${replyBody}`;
+    return `
+    <div class="msg-card" id="msg-${m.id}">
       <div class="msg-head">
-        <span class="msg-from">${esc(m.name)} &lt;${esc(m.email)}&gt;</span>
+        <span class="msg-from">${esc(m.name)}</span>
         <span class="msg-date">${new Date(m.created_at).toLocaleDateString()}</span>
       </div>
+      <div style="font-family:var(--sans);font-size:.74rem;color:var(--gold-dim);margin-bottom:.35rem;">
+        ${esc(m.email)}
+      </div>
       ${m.subject ? `<div class="msg-subj">${esc(m.subject)}</div>` : ''}
-      <div class="msg-body">${esc(m.body)}</div>
-      <button class="ib del" style="margin-top:.5rem;"
-              onclick="deleteMsg('${m.id}')">🗑 Delete</button>
-    </div>`).join('');
+      <div class="msg-body-preview">${esc(preview)}</div>
+      <div class="msg-body-full" id="body-${m.id}">${esc(m.body)}</div>
+      <div class="msg-actions">
+        <button class="msg-expand-btn" onclick="toggleMsg('${m.id}', this)">
+          ▾ Read Message
+        </button>
+        <a class="msg-reply-btn" href="${mailto}">
+          ✉ Reply
+        </a>
+        <button class="ib del" onclick="deleteMsg('${m.id}')">🗑 Delete</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleMsg(id, btn) {
+  const body = document.getElementById('body-' + id);
+  const open = body.classList.contains('open');
+  body.classList.toggle('open');
+  btn.textContent = open ? '▾ Read Message' : '▴ Collapse';
 }
 
 async function deleteMsg(id) {
