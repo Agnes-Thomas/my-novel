@@ -81,10 +81,12 @@
   <div id="font-controls">
     <p>Text Size</p>
     <div class="fsbtn-row">
-      <button class="fsbtn"    onclick="setSize('small')">S</button>
-      <button class="fsbtn on" onclick="setSize('normal')">M</button>
-      <button class="fsbtn"    onclick="setSize('large')">L</button>
-      <button class="fsbtn"    onclick="setSize('xlarge')">XL</button>
+      <button class="fsbtn"    onclick="setSize('14px')">14</button>
+      <button class="fsbtn"    onclick="setSize('16px')">16</button>
+      <button class="fsbtn on" onclick="setSize('18px')">18</button>
+      <button class="fsbtn"    onclick="setSize('20px')">20</button>
+      <button class="fsbtn"    onclick="setSize('24px')">24</button>
+      <button class="fsbtn"    onclick="setSize('28px')">28</button>
     </div>
   </div>
 
@@ -186,11 +188,14 @@ let allChapters = [];
 let gateEnabled = true;
 
 /* ── font size ── */
-const sizes = { small:'0.95rem', normal:'1.1rem', large:'1.22rem', xlarge:'1.38rem' };
+const sizes = {
+  '14px':'14px','16px':'16px','18px':'18px',
+  '20px':'20px','24px':'24px','28px':'28px'
+};
 
 function setSize(key) {
   const body = document.getElementById('reader-ch-body');
-  if (body) body.style.fontSize = sizes[key] || '1.1rem';
+  if (body) body.style.fontSize = key;
   document.querySelectorAll('.fsbtn').forEach(b => b.classList.remove('on'));
   const target = document.querySelector(`.fsbtn[onclick="setSize('${key}')"]`);
   if (target) target.classList.add('on');
@@ -204,7 +209,7 @@ function toggleFC() {
 
 /* restore saved size */
 const savedSz = localStorage.getItem('novel_font_size');
-if (savedSz && sizes[savedSz]) {
+if (savedSz) {
   document.querySelectorAll('.fsbtn').forEach(b => b.classList.remove('on'));
   const t = document.querySelector(`.fsbtn[onclick="setSize('${savedSz}')"]`);
   if (t) t.classList.add('on');
